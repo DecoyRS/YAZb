@@ -1,10 +1,10 @@
 package com.github.decoyrs.ziggij.services
 
-import com.github.decoyrs.ziggij.MyBundle
+import com.github.decoyrs.ziggij.ZiggIjBundle
 
 class MyApplicationService {
 
     init {
-        println(MyBundle.message("applicationService"))
+        println(ZiggIjBundle.message("applicationService"))
     }
 }

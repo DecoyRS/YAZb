@@ -10,6 +10,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.decoyrs.ziggij.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.decoyrs.ziggij.services.MyProjectService"/>
+        <fileType name="Zig File" implementationClass="com.github.decoyrs.ziggij.ZigFileType" fieldName="INSTANCE" language="Zig" extensions="zig"/>
     </extensions>
 
     <applicationListeners>
