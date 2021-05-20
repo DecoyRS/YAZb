@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.decoyrs.ziggij.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.decoyrs.ziggij.MyBundle
 
 class MyApplicationService {
 
