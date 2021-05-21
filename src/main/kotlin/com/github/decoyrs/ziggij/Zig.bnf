@@ -1,0 +1,51 @@
+{
+  parserClass="com.github.decoyrs.ziggij.language.parser.ZigParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Zig"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.intellij.psi"
+  psiImplPackage="com.intellij.psi.impl"
+
+  elementTypeHolderClass="com.github.decoyrs.ziggij.language.psi.ZigTypes"
+  elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
+  tokenTypeClass="com.github.decoyrs.ziggij.language.psi.ZigTokenType"
+  tokens = [
+    KEYWORD_comptime="comptime"
+    KEYWORD_test="test"
+    KEYWORD_public="public"
+    KEYWORD_export="export"
+    KEYWORD_extern="extern"
+  ]
+}
+
+zigFie ::= ContainerMembers
+
+ContainerMembers ::=
+    ( testDecl
+    | topLevelComptime
+    | topLevelDecl
+    | containerField COMMA
+    )* containerField
+
+testDecl ::= 'test' STRINGLITERALSINGLE Block
+
+topLevelComptime ::= 'comptime' BlockExpr
+
+topLevelDecl ::=
+    ( globalFnPrototype
+    | globalVarDeclaration
+    | globalUsingNamespace
+    )
+
+globalFnPrototype ::= 'public'? ('export' | 'extern' STRINGLITERALSINGLE? | INLINE_KEYWORD | NOINLINE_KEYWORD)? fnProto SEMICOLON {
+    mixin='org.ziglang.psi.impl.ZigFnPrototypeMixin'
+    implements=['org.ziglang.psi.impl.ZigFnPrototypeMixinI']
+    methods=[
+        functionPrototype="fnProto"
+        extern="stringLiteralSimple"
+    ]
+    name = "Function Prototype"
+}
+
