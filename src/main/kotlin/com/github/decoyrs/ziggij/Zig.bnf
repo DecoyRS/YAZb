@@ -11,41 +11,430 @@
   elementTypeHolderClass="com.github.decoyrs.ziggij.language.psi.ZigTypes"
   elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
   tokenTypeClass="com.github.decoyrs.ziggij.language.psi.ZigTokenType"
+
+extends('.*Expr')=Expr
+
   tokens = [
+    AMPERSAND="&"
+    AMPERSANDEQUAL="&="
+    ASTERISK="*"
+    ASTERISK2="**"
+    ASTERISKEQUAL="*="
+    ASTERISKPERCENT="*%"
+    ASTERISKPERCENTEQUAL="*%="
+    CARET="^"
+    CARETEQUAL="^="
+    COLON=":"
+    COMMA=","
+    DOT="."
+    DOT2=".."
+    DOT3="..."
+    DOTASTERISK=".*"
+    DOTQUESTIONMARK=".?"
+    EQUAL="="
+    EQUALEQUAL="=="
+    EQUALRARROW="=>"
+    EXCLAMATIONMARK="!"
+    EXCLAMATIONMARKEQUAL="!="
+    LARROW="<"
+    LARROW2="<<"
+    LARROW2EQUAL="<<="
+    LARROWEQUAL="<="
+    LBRACE="{"
+    LBRACKET="["
+    LPAREN="("
+    MINUS="-"
+    MINUSEQUAL="-="
+    MINUSPERCENT="-%"
+    MINUSPERCENTEQUAL="-%="
+    MINUSRARROW="->"
+    PERCENT="%"
+    PERCENTEQUAL="%="
+    PIPE="|"
+    PIPE2="||"
+    PIPEEQUAL="|="
+    PLUS="+"
+    PLUS2="++"
+    PLUSEQUAL="+="
+    PLUSPERCENT="+%"
+    PLUSPERCENTEQUAL="+%="
+    PTRC="[*c]"
+    PTRUNKNOWN="[*]"
+    QUESTIONMARK="?"
+    RARROW=">"
+    RARROW2=">>"
+    RARROW2EQUAL=">>="
+    RARROWEQUAL=">="
+    RBRACE="}"
+    RBRACKET="]"
+    RPAREN=")"
+    SEMICOLON=";"
+    SLASH="/"
+    SLASHEQUAL="/="
+    TILDE="~"
+    // Keywords
+    KEYWORD_align="align"
+    KEYWORD_allowzero="allowzero"
+    KEYWORD_and="and"
+    KEYWORD_anyframe="anyframe"
+    KEYWORD_anytype="anytype"
+    KEYWORD_asm="asm"
+    KEYWORD_async="async"
+    KEYWORD_await="await"
+    KEYWORD_break="break"
+    KEYWORD_catch="catch"
     KEYWORD_comptime="comptime"
-    KEYWORD_test="test"
-    KEYWORD_public="public"
+    KEYWORD_const="const"
+    KEYWORD_continue="continue"
+    KEYWORD_defer="defer"
+    KEYWORD_else="else"
+    KEYWORD_enum="enum"
+    KEYWORD_errdefer="errdefer"
+    KEYWORD_error="error"
     KEYWORD_export="export"
     KEYWORD_extern="extern"
+    KEYWORD_false="false"
+    KEYWORD_fn="fn"
+    KEYWORD_for="for"
+    KEYWORD_if="if"
+    KEYWORD_inline="inline"
+    KEYWORD_linksection="linksection"
+    KEYWORD_noalias="noalias"
+    KEYWORD_nosuspend="nosuspend"
+    KEYWORD_null="null"
+    KEYWORD_opaque="opaque"
+    KEYWORD_or="or"
+    KEYWORD_orelse="orelse"
+    KEYWORD_packed="packed"
+    KEYWORD_pub="pub"
+    KEYWORD_resume="resume"
+    KEYWORD_return="return"
+    KEYWORD_struct="struct"
+    KEYWORD_suspend="suspend"
+    KEYWORD_switch="switch"
+    KEYWORD_test="test"
+    KEYWORD_threadlocal="threadlocal"
+    KEYWORD_true="true"
+    KEYWORD_try="try"
+    KEYWORD_undefined="undefined"
+    KEYWORD_union="union"
+    KEYWORD_unreachable="unreachable"
+    KEYWORD_usingnamespace="usingnamespace"
+    KEYWORD_var="var"
+    KEYWORD_volatile="volatile"
+    KEYWORD_while="while"
+
+    CHAR_LITERAL="regexp:'(\\x[0-9a-fA-F]{2}|\\u\{[0-9-a-fA-F]+|\\[nrt'\"\\]|[^\\'\n])'"
+    STRING_LITERAL_SINGLE="regexp:\"(\\x[0-9a-fA-F]{2}|\\u\{[0-9-a-fA-F]+|\\[nrt'\"\\]|[^\\\"\n])*\""
+    LINE_STRING="regexp:(\\\\[^\n]*[ \n]*)+"
+    INTEGER_LITERAL="regexp:0b[_01]*[01]|0o[_0-7]+[0-7]|0x(_|[0-9a-fA-F])*[0-9a-fA-F]|[0-9]((_|[0-9])*[0-9])?"
+    FLOAT_LITERAL="regexp:[0-9]+(\.[0-9]+)?" // Simplified
+    IDENTIFIER="regexp:([A-Za-z_][A-Za-z0-9_]*|@\"[^\"]*\")" // Simplified non-ascii
+    BUILTINIDENTIFIER="regexp:@[A-Za-z_][A-Za-z0-9_]*"
+    WHITESPACE="regexp:[ \n]+"
+    LINE_COMMENT="regexp://[^\n]*"
   ]
 }
 
-zigFie ::= ContainerMembers
+zigFie ::= ContainerMembers <<eof>>
 
 ContainerMembers ::=
-    ( testDecl
-    | topLevelComptime
-    | topLevelDecl
-    | containerField COMMA
-    )* containerField
+    ( TestDecl
+    | TopLevelComptime
+    | 'pub'? TopLevelDecl
+    | ContainerField ','
+    )* ContainerField
 
-testDecl ::= 'test' STRINGLITERALSINGLE Block
+TestDecl ::= 'test' STRING_LITERAL_SINGLE Block
 
-topLevelComptime ::= 'comptime' BlockExpr
+TopLevelComptime ::= 'comptime' BlockExpr
 
-topLevelDecl ::=
-    ( globalFnPrototype
-    | globalVarDeclaration
-    | globalUsingNamespace
+TopLevelDecl ::=
+    ( TopLevelFnProto
+    | TopLevelVarDecl
+    | 'usingnamespace' Expr ';'
     )
 
-globalFnPrototype ::= 'public'? ('export' | 'extern' STRINGLITERALSINGLE? | INLINE_KEYWORD | NOINLINE_KEYWORD)? fnProto SEMICOLON {
-    mixin='org.ziglang.psi.impl.ZigFnPrototypeMixin'
-    implements=['org.ziglang.psi.impl.ZigFnPrototypeMixinI']
-    methods=[
-        functionPrototype="fnProto"
-        extern="stringLiteralSimple"
-    ]
-    name = "Function Prototype"
-}
+private TopLevelFnProto ::= ('export' | 'extern' STRING_LITERAL_SINGLE? | 'inline' )? FnProto (';' | Block)
+private TopLevelVarDecl ::= ('export' | 'extern' STRING_LITERAL_SINGLE?)? 'threadlocal'? VarDecl
+
+FnProto ::= 'fn' IDENTIFIER? '(' ParamDeclList ')' ByteAlign? LinkSection? '!'? ('anytype' | TypeExpr)
+
+VarDecl ::= ('const' | 'var') IDENTIFIER (':' TypeExpr)? ByteAlign? LinkSection? ('=' Expr)? ';'
+
+ContainerField ::= 'comptime'? IDENTIFIER (':' TypeExpr)? ('=' Expr)?
+
+Statement ::=
+    ( 'comptime'? VarDecl
+    | 'comptime' BlockExprStatement
+    | 'nosuspend' BlockExprStatement
+    | 'suspend' (';' | BlockExprStatement)
+    | 'defer' BlockExprStatement
+    | 'errdefer' BlockExprStatement
+    | IfStatement
+    | LabeledStatement
+    | SwitchExpr
+    | AssignExpr ';'
+    )
+
+IfStatement ::=
+    ( IfPrefix BlockExpr ('else' Payload? Statement)?
+    | IfPrefix AssignExpr (';' | 'else' Payload? Statement)
+    )
+
+LabeledStatement ::= BlockLabel? (Block | LoopStatement)
+
+LoopStatement ::= 'inline'? (ForStatement | WhileStatement)
+
+ForStatement ::=
+    ( ForPrefix BlockExpr ('else' Statement)?
+    | ForPrefix AssignExpr (';' | 'else' Statement)
+    )
+
+WhileStatement ::=
+    ( WhilePrefix BlockExpr ('else' Payload? Statement)?
+    | WhilePrefix AssignExpr (';' | 'else' Payload? Statement)
+    )
+
+BlockExprStatement ::=
+    ( BlockExpr
+    | AssignExpr ';'
+    )
+
+BlockExpr ::= BlockLabel ? Block
+
+AssignExpr ::= Expr (AssignOp Expr)?
+
+Expr ::= 'try'* BoolOrExpr
+
+BoolOrExpr ::= BoolAndExpr ('or' BoolAndExpr)*
+
+BoolAndExpr ::= CompareExpr ('and' CompareExpr)*
+
+CompareExpr ::= BitwiseExpr (CompareOp BitwiseExpr)*
+
+BitwiseExpr ::= BitShiftExpr (BitwiseOp BitShiftExpr)*
+
+BitShiftExpr ::= AdditionExpr (BitShiftOp AdditionExpr)*
+
+AdditionExpr ::= MultiplyExpr (AdditionOp MultiplyExpr)*
+
+MultiplyExpr ::= PrefixExpr (MultiplyOp PrefixExpr)*
+
+PrefixExpr ::= PrefixOp* PrimaryExpr
+
+PrimaryExpr ::=
+    ( AsmExpr
+    | IfExpr
+    | 'break' BreakLabel? Expr?
+    | 'comptime' Expr
+    | 'nosuspend' Expr
+    | 'continue' BreakLabel?
+    | 'resume' Expr
+    | 'return' Expr?
+    | BlockLabel? LoopExpr
+    | Block
+    | CurlySuffixExpr
+    )
+
+IfExpr ::= IfPrefix Expr ('else' Payload? Expr)?
+
+Block ::= '{' Statement* '}'
+
+LoopExpr ::= 'inline'? (ForExpr | WhileExpr)
+
+ForExpr ::= ForPrefix Expr ('else' Expr)?
+
+WhileExpr ::= WhilePrefix Expr ('else' Payload? Expr)?
+
+CurlySuffixExpr ::= TypeExpr InitList?
+
+InitList ::=
+    ( '(' FieldInit (',' FieldInit)* ','? ')'
+    | '(' Expr (',' Expr)* ','? ')'
+    | '(' ')'
+    )
+
+TypeExpr ::= PrefixTypeOp* ErrorUnionExpr
+
+ErrorUnionExpr ::= SuffixExpr ('!' TypeExpr)?
+
+SuffixExpr ::=
+    ( 'async' PrimaryTypeExpr SuffixOp* FnCallArguments
+    | PrimaryTypeExpr (SuffixOp | FnCallArguments)*
+    )
+
+PrimaryTypeExpr ::=
+    ( BUILTINIDENTIFIER FnCallArguments
+    | CHAR_LITERAL
+    | ContainerDecl
+    | '.' IDENTIFIER
+    | '.' InitList
+    | ErrorSetDecl
+    | FLOAT_LITERAL
+    | FnProto
+    | GroupedExpr
+    | LabeledTypeExpr
+    | IDENTIFIER
+    | IfTypeExpr
+    | INTEGER_LITERAL
+    | 'comptime' TypeExpr
+    | 'error' '.' IDENTIFIER
+    | 'false'
+    | 'null'
+    | 'anyframe'
+    | 'true'
+    | 'undefined'
+    | 'unreachable'
+    | STRING_LITERAL_SINGLE
+    )
+
+ContainerDecl ::= ('extern' | 'packed')? ContainerDeclAuto
+
+ErrorSetDecl ::= 'error' '(' IdentifierList ')'
+
+GroupedExpr ::= '(' Expr ')'
+
+IfTypeExpr ::= IfPrefix TypeExpr ('else' Payload? TypeExpr)?
+
+LabeledTypeExpr ::=
+    ( BlockLabel Block
+    | BlockLabel? LoopTypeExpr
+    )
+
+LoopTypeExpr ::= 'inline'? (ForTypeExpr | WhileTypeExpr)
+
+ForTypeExpr ::= ForPrefix TypeExpr ('else' TypeExpr)?
+
+WhileTypeExpr ::= WhilePrefix TypeExpr ('else' Payload? TypeExpr)?
+
+SwitchExpr ::= 'switch' '(' Expr ')' '{' SwitchProngList '}'
+
+// Assembly
+AsmExpr ::= 'asm' 'volatile'? '(' STRING_LITERAL_SINGLE AsmOutput? ')'
+
+AsmOutput ::= ':' AsmOutputList AsmInput?
+
+AsmOutputItem ::= '[' IDENTIFIER ']' STRING_LITERAL_SINGLE '(' ('->' TypeExpr | IDENTIFIER) ')'
+
+AsmInput ::= ':' AsmInputList AsmClobbers?
+
+AsmInputItem ::= '[' IDENTIFIER ']' STRING_LITERAL_SINGLE '(' Expr ')'
+
+AsmClobbers ::= ':' StringList
+
+// Helper grammar
+BreakLabel ::= ':' IDENTIFIER
+
+BlockLabel ::= IDENTIFIER ':'
+
+FieldInit ::= '.' IDENTIFIER '=' Expr
+
+WhileContinueExpr ::= ':' '(' AssignExpr ')'
+
+LinkSection ::= 'linksection' '(' Expr ')'
+
+ParamDecl ::= ('noalias' | 'comptime')? (IDENTIFIER ':')? ParamType
+
+ParamType ::=
+    ( 'anytype'
+    | '...'
+    | TypeExpr
+    )
+
+// Control flow prefixes
+IfPrefix ::= 'if' '(' Expr ')' PtrPayload?
+
+WhilePrefix ::= 'while' '(' Expr ')' PtrPayload? WhileContinueExpr?
+
+ForPrefix ::= 'for' '(' Expr ')' PtrIndexPaylod
+
+// Payloads
+Payload ::= '|' IDENTIFIER '|'
+
+PtrPayload ::= '|' '*'? IDENTIFIER '|'
+
+PtrIndexPaylod ::= '|' '*'? IDENTIFIER (',' IDENTIFIER)? '|'
+
+// Switch specific
+SwitchProng ::= SwitchCase '=>' PtrPayload? AssignExpr
+
+SwitchCase ::=
+    ( SwitchItem (',' SwitchItem)* ','?
+    | 'else'
+    )
+
+SwitchItem ::= Expr ('...' Expr)?
+
+// Operators
+AssignOp ::=
+    ( '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|='
+    | '*%=' | '+%=' | '-%=' | '=')
+
+CompareOp ::= ( '==' | '!=' | '<' | '>' | '<=' | '>=')
+
+BitwiseOp ::=
+    ( '&' | '^' | '|'
+    | 'orelse'
+    | 'catch' Payload?
+    )
+
+BitShiftOp ::= ('<<' | '>>')
+
+AdditionOp ::= ( '+' | '-' | '++' | '+%' | '-%')
+
+MultiplyOp ::= ( '||' | '*' | '/' | '%' | '**' | '*%')
+
+PrefixOp ::= ('!' | '-' | '~' | '-%' | '&' | 'try' | 'await')
+
+PrefixTypeOp ::=
+    ( '?'
+    | 'anyframe' '->'
+    | ArrayTypeStart (ByteAlign | 'const' | 'volatile' | 'allowzero')*
+    | PtrTypeStart ('align' '(' Expr (':' INTEGER_LITERAL ':' INTEGER_LITERAL)? ')' | 'const' | 'volatile' | 'allowzero')*
+    )
+
+SuffixOp ::=
+    ( '[' Expr ('..' Expr?)? ']'
+    | '.' IDENTIFIER
+    | '.*'
+    | '.?'
+    )
+
+FnCallArguments ::= '(' ExprList ')'
+
+// Ptr specific
+ArrayTypeStart ::= '[' Expr? ']'
+
+PtrTypeStart ::= ('*' | '**' | '[*]' | '[*c]')
+
+// ContainerDecl specific
+ContainerDeclAuto ::= ContainerDeclType '{' ContainerMembers '}'
+
+ContainerDeclType ::=
+    ( ('struct' | 'enum' | 'opaque') ('(' Expr ')')?
+    | 'union' ('(' ('enum' ( '(' Expr ')')? | Expr ) ')')?
+    )
+
+// Aligment
+ByteAlign ::= 'align' '(' Expr ')'
+
+// Lists
+IdentifierList ::= (IDENTIFIER ',')* IDENTIFIER?
+
+SwitchProngList ::= (SwitchProng ',')* SwitchProng?
+
+AsmOutputList ::= (AsmOutputItem ',')* AsmOutputItem?
+
+AsmInputList ::= (AsmInputItem ',')* AsmInputItem?
+
+StringList ::= (STRING_LITERAL_SINGLE ',')* STRING_LITERAL_SINGLE?
+
+ParamDeclList ::= (ParamDecl ',')* ParamDecl?
+
+ExprList ::= (Expr ',')* Expr?
+
+
+
+
 
