@@ -12,7 +12,7 @@
   elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
   tokenTypeClass="com.github.decoyrs.ziggij.language.psi.ZigTokenType"
 
-extends('.*Expr')=Expr
+  extends('.*Expr')=Expr
 
   tokens = [
     AMPERSAND="&"
@@ -136,82 +136,84 @@ extends('.*Expr')=Expr
   ]
 }
 
-zigFie ::= ContainerMembers <<eof>>
+Root ::= ContainerMembers
 
 ContainerMembers ::=
     ( TestDecl
     | TopLevelComptime
-    | 'pub'? TopLevelDecl
-    | ContainerField ','
+    | TopLevelDecl
+    | ContainerField COMMA
     )* ContainerField?
 
-TestDecl ::= 'test' STRING_LITERAL_SINGLE Block
+TestDecl ::= KEYWORD_test STRING_LITERAL_SINGLE Block
 
-TopLevelComptime ::= 'comptime' BlockExpr
+TopLevelComptime ::= KEYWORD_comptime BlockExpr
 
-TopLevelDecl ::=
+TopLevelDecl ::= 'pub'?
     ( TopLevelFnProto
     | TopLevelVarDecl
-    | 'usingnamespace' Expr ';'
+    | KEYWORD_usingnamespace Expr SEMICOLON
     )
 
-private TopLevelFnProto ::= ('export' | 'extern' STRING_LITERAL_SINGLE? | 'inline' )? FnProto (';' | Block)
-private TopLevelVarDecl ::= ('export' | 'extern' STRING_LITERAL_SINGLE?)? 'threadlocal'? VarDecl
+private TopLevelFnProto ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE? | KEYWORD_inline )? FnProto (SEMICOLON | Block)
+private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
-FnProto ::= 'fn' IDENTIFIER? '(' ParamDeclList ')' ByteAlign? LinkSection? '!'? ('anytype' | TypeExpr)
+FnProto ::= KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? EXCLAMATIONMARK? (KEYWORD_anytype | TypeExpr)
 
-VarDecl ::= ('const' | 'var') IDENTIFIER (':' TypeExpr)? ByteAlign? LinkSection? ('=' Expr)? ';'
+VarDecl ::= (KEYWORD_const | KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField ::= 'comptime'? IDENTIFIER (':' TypeExpr)? ('=' Expr)?
+ContainerField ::= KEYWORD_comptime? IDENTIFIER (COLON TypeExpr)? (EQUAL Expr)?
 
+// Block level
 Statement ::=
-    ( 'comptime'? VarDecl
-    | 'comptime' BlockExprStatement
-    | 'nosuspend' BlockExprStatement
-    | 'suspend' (';' | BlockExprStatement)
-    | 'defer' BlockExprStatement
-    | 'errdefer' BlockExprStatement
+    ( KEYWORD_comptime? VarDecl
+    | KEYWORD_comptime BlockExprStatement
+    | KEYWORD_nosuspend BlockExprStatement
+    | KEYWORD_suspend (SEMICOLON | BlockExprStatement)
+    | KEYWORD_defer BlockExprStatement
+    | KEYWORD_errdefer BlockExprStatement
     | IfStatement
     | LabeledStatement
     | SwitchExpr
-    | AssignExpr ';'
+    | AssignExpr SEMICOLON
     )
 
 IfStatement ::=
-    ( IfPrefix BlockExpr ('else' Payload? Statement)?
-    | IfPrefix AssignExpr (';' | 'else' Payload? Statement)
+    ( IfPrefix BlockExpr (KEYWORD_else Payload? Statement)?
+    | IfPrefix AssignExpr (SEMICOLON | KEYWORD_else Payload? Statement)
     )
 
 LabeledStatement ::= BlockLabel? (Block | LoopStatement)
 
-LoopStatement ::= 'inline'? (ForStatement | WhileStatement)
+LoopStatement ::= KEYWORD_inline? (ForStatement | WhileStatement)
 
 ForStatement ::=
-    ( ForPrefix BlockExpr ('else' Statement)?
-    | ForPrefix AssignExpr (';' | 'else' Statement)
+    ( ForPrefix BlockExpr (KEYWORD_else Statement)?
+    | ForPrefix AssignExpr (SEMICOLON | KEYWORD_else Statement)
     )
 
 WhileStatement ::=
-    ( WhilePrefix BlockExpr ('else' Payload? Statement)?
-    | WhilePrefix AssignExpr (';' | 'else' Payload? Statement)
+    ( WhilePrefix BlockExpr (KEYWORD_else Payload? Statement)?
+    | WhilePrefix AssignExpr (SEMICOLON | KEYWORD_else Payload? Statement)
     )
 
 BlockExprStatement ::=
     ( BlockExpr
-    | AssignExpr ';'
+    | AssignExpr SEMICOLON
     )
 
 BlockExpr ::= BlockLabel ? Block
 
 AssignExpr ::= Expr (AssignOp Expr)?
 
-Expr ::= 'try'* BoolOrExpr
+// Expression level
+Expr ::= KEYWORD_try* BoolOrExpr
 
-BoolOrExpr ::= BoolAndExpr ('or' BoolAndExpr)*
+BoolOrExpr ::= BoolAndExpr (KEYWORD_or BoolAndExpr)*
 
-BoolAndExpr ::= CompareExpr ('and' CompareExpr)*
+BoolAndExpr ::= CompareExpr (KEYWORD_and CompareExpr)*
 
-CompareExpr ::= BitwiseExpr (CompareOp BitwiseExpr)*
+CompareExpr ::= BitwiseExpr (CompareOp BitwiseExpr)?
 
 BitwiseExpr ::= BitShiftExpr (BitwiseOp BitShiftExpr)*
 
@@ -226,41 +228,41 @@ PrefixExpr ::= PrefixOp* PrimaryExpr
 PrimaryExpr ::=
     ( AsmExpr
     | IfExpr
-    | 'break' BreakLabel? Expr?
-    | 'comptime' Expr
-    | 'nosuspend' Expr
-    | 'continue' BreakLabel?
-    | 'resume' Expr
-    | 'return' Expr?
+    | KEYWORD_break BreakLabel? Expr?
+    | KEYWORD_comptime Expr
+    | KEYWORD_nosuspend Expr
+    | KEYWORD_continue BreakLabel?
+    | KEYWORD_resume Expr
+    | KEYWORD_return Expr?
     | BlockLabel? LoopExpr
     | Block
     | CurlySuffixExpr
     )
 
-IfExpr ::= IfPrefix Expr ('else' Payload? Expr)?
+IfExpr ::= IfPrefix Expr (KEYWORD_else Payload? Expr)?
 
-Block ::= '{' Statement* '}'
+Block ::= LBRACE Statement* RBRACE
 
-LoopExpr ::= 'inline'? (ForExpr | WhileExpr)
+LoopExpr ::= KEYWORD_inline? (ForExpr | WhileExpr)
 
-ForExpr ::= ForPrefix Expr ('else' Expr)?
+ForExpr ::= ForPrefix Expr (KEYWORD_else Expr)?
 
-WhileExpr ::= WhilePrefix Expr ('else' Payload? Expr)?
+WhileExpr ::= WhilePrefix Expr (KEYWORD_else Payload? Expr)?
 
 CurlySuffixExpr ::= TypeExpr InitList?
 
 InitList ::=
-    ( '(' FieldInit (',' FieldInit)* ','? ')'
-    | '(' Expr (',' Expr)* ','? ')'
-    | '(' ')'
+    ( LBRACE FieldInit (COMMA FieldInit)* COMMA? RBRACE
+    | LBRACE Expr (COMMA Expr)* COMMA? RBRACE
+    | LBRACE RBRACE
     )
 
 TypeExpr ::= PrefixTypeOp* ErrorUnionExpr
 
-ErrorUnionExpr ::= SuffixExpr ('!' TypeExpr)?
+ErrorUnionExpr ::= SuffixExpr (EXCLAMATIONMARK TypeExpr)?
 
 SuffixExpr ::=
-    ( 'async' PrimaryTypeExpr SuffixOp* FnCallArguments
+    ( KEYWORD_async PrimaryTypeExpr SuffixOp* FnCallArguments
     | PrimaryTypeExpr (SuffixOp | FnCallArguments)*
     )
 
@@ -268,8 +270,8 @@ PrimaryTypeExpr ::=
     ( BUILTINIDENTIFIER FnCallArguments
     | CHAR_LITERAL
     | ContainerDecl
-    | '.' IDENTIFIER
-    | '.' InitList
+    | DOT IDENTIFIER
+    | DOT InitList
     | ErrorSetDecl
     | FLOAT_LITERAL
     | FnProto
@@ -278,161 +280,174 @@ PrimaryTypeExpr ::=
     | IDENTIFIER
     | IfTypeExpr
     | INTEGER_LITERAL
-    | 'comptime' TypeExpr
-    | 'error' '.' IDENTIFIER
-    | 'false'
-    | 'null'
-    | 'anyframe'
-    | 'true'
-    | 'undefined'
-    | 'unreachable'
+    | KEYWORD_comptime TypeExpr
+    | KEYWORD_error DOT IDENTIFIER
+    | KEYWORD_false
+    | KEYWORD_null
+    | KEYWORD_anyframe
+    | KEYWORD_true
+    | KEYWORD_undefined
+    | KEYWORD_unreachable
     | STRING_LITERAL_SINGLE
+    | SwitchExpr
     )
 
-ContainerDecl ::= ('extern' | 'packed')? ContainerDeclAuto
+ContainerDecl ::= (KEYWORD_extern | KEYWORD_packed)? ContainerDeclAuto
 
-ErrorSetDecl ::= 'error' '(' IdentifierList ')'
+ErrorSetDecl ::= KEYWORD_error LBRACE IdentifierList RBRACE
 
-GroupedExpr ::= '(' Expr ')'
+GroupedExpr ::= LPAREN Expr RPAREN
 
-IfTypeExpr ::= IfPrefix TypeExpr ('else' Payload? TypeExpr)?
+IfTypeExpr ::= IfPrefix TypeExpr (KEYWORD_else Payload? TypeExpr)?
 
 LabeledTypeExpr ::=
     ( BlockLabel Block
     | BlockLabel? LoopTypeExpr
     )
 
-LoopTypeExpr ::= 'inline'? (ForTypeExpr | WhileTypeExpr)
+LoopTypeExpr ::= KEYWORD_inline? (ForTypeExpr | WhileTypeExpr)
 
-ForTypeExpr ::= ForPrefix TypeExpr ('else' TypeExpr)?
+ForTypeExpr ::= ForPrefix TypeExpr (KEYWORD_else TypeExpr)?
 
-WhileTypeExpr ::= WhilePrefix TypeExpr ('else' Payload? TypeExpr)?
+WhileTypeExpr ::= WhilePrefix TypeExpr (KEYWORD_else Payload? TypeExpr)?
 
-SwitchExpr ::= 'switch' '(' Expr ')' '{' SwitchProngList '}'
+SwitchExpr ::= KEYWORD_switch LPAREN Expr RPAREN LBRACE SwitchProngList RBRACE
 
 // Assembly
-AsmExpr ::= 'asm' 'volatile'? '(' STRING_LITERAL_SINGLE AsmOutput? ')'
+AsmExpr ::= KEYWORD_asm KEYWORD_volatile? LPAREN STRING_LITERAL_SINGLE AsmOutput? RPAREN
 
-AsmOutput ::= ':' AsmOutputList AsmInput?
+AsmOutput ::= COLON AsmOutputList AsmInput?
 
-AsmOutputItem ::= '[' IDENTIFIER ']' STRING_LITERAL_SINGLE '(' ('->' TypeExpr | IDENTIFIER) ')'
+AsmOutputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL_SINGLE LPAREN (MINUSRARROW TypeExpr | IDENTIFIER) RPAREN
 
-AsmInput ::= ':' AsmInputList AsmClobbers?
+AsmInput ::= COLON AsmInputList AsmClobbers?
 
-AsmInputItem ::= '[' IDENTIFIER ']' STRING_LITERAL_SINGLE '(' Expr ')'
+AsmInputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL_SINGLE LPAREN Expr RPAREN
 
-AsmClobbers ::= ':' StringList
+AsmClobbers ::= COLON StringList
 
 // Helper grammar
-BreakLabel ::= ':' IDENTIFIER
+BreakLabel ::= COLON IDENTIFIER
 
-BlockLabel ::= IDENTIFIER ':'
+BlockLabel ::= IDENTIFIER COLON
 
-FieldInit ::= '.' IDENTIFIER '=' Expr
+FieldInit ::= DOT IDENTIFIER EQUAL Expr
 
-WhileContinueExpr ::= ':' '(' AssignExpr ')'
+WhileContinueExpr ::= COLON LPAREN AssignExpr RPAREN
 
-LinkSection ::= 'linksection' '(' Expr ')'
+LinkSection ::= KEYWORD_linksection LPAREN Expr RPAREN
 
-ParamDecl ::= ('noalias' | 'comptime')? (IDENTIFIER ':')? ParamType
+ParamDecl ::= (KEYWORD_noalias | KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 
 ParamType ::=
-    ( 'anytype'
-    | '...'
+    ( KEYWORD_anytype
+    | DOT3
     | TypeExpr
     )
 
 // Control flow prefixes
-IfPrefix ::= 'if' '(' Expr ')' PtrPayload?
+IfPrefix ::= KEYWORD_if LPAREN Expr RPAREN PtrPayload?
 
-WhilePrefix ::= 'while' '(' Expr ')' PtrPayload? WhileContinueExpr?
+WhilePrefix ::= KEYWORD_while LPAREN Expr RPAREN PtrPayload? WhileContinueExpr?
 
-ForPrefix ::= 'for' '(' Expr ')' PtrIndexPaylod
+ForPrefix ::= KEYWORD_for LPAREN Expr RPAREN PtrIndexPaylod
 
 // Payloads
-Payload ::= '|' IDENTIFIER '|'
+Payload ::= PIPE IDENTIFIER PIPE
 
-PtrPayload ::= '|' '*'? IDENTIFIER '|'
+PtrPayload ::= PIPE ASTERISK? IDENTIFIER PIPE
 
-PtrIndexPaylod ::= '|' '*'? IDENTIFIER (',' IDENTIFIER)? '|'
+PtrIndexPaylod ::= PIPE ASTERISK? IDENTIFIER (COMMA IDENTIFIER)? PIPE
 
 // Switch specific
-SwitchProng ::= SwitchCase '=>' PtrPayload? AssignExpr
+SwitchProng ::= SwitchCase EQUALRARROW PtrPayload? AssignExpr
 
 SwitchCase ::=
-    ( SwitchItem (',' SwitchItem)* ','?
-    | 'else'
+    ( SwitchItem (COMMA SwitchItem)* COMMA?
+    | KEYWORD_else
     )
 
-SwitchItem ::= Expr ('...' Expr)?
+SwitchItem ::= Expr (DOT3 Expr)?
 
 // Operators
 AssignOp ::=
-    ( '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|='
-    | '*%=' | '+%=' | '-%=' | '=')
-
-CompareOp ::= ( '==' | '!=' | '<' | '>' | '<=' | '>=')
-
-BitwiseOp ::=
-    ( '&' | '^' | '|'
-    | 'orelse'
-    | 'catch' Payload?
+    ( ASTERISKEQUAL | SLASHEQUAL | PERCENTEQUAL | PLUSEQUAL | MINUSEQUAL | LARROW2EQUAL | RARROW2EQUAL | AMPERSANDEQUAL
+    | CARETEQUAL | PIPEEQUAL | ASTERISKPERCENTEQUAL | PLUSPERCENTEQUAL | MINUSPERCENTEQUAL | EQUAL
     )
 
-BitShiftOp ::= ('<<' | '>>')
+CompareOp ::= ( EQUALEQUAL | EXCLAMATIONMARKEQUAL | LARROW | RARROW | LARROWEQUAL | RARROWEQUAL)
 
-AdditionOp ::= ( '+' | '-' | '++' | '+%' | '-%')
+BitwiseOp ::=
+    ( AMPERSAND | CARET | PIPE
+    | KEYWORD_orelse
+    | KEYWORD_catch Payload?
+    )
 
-MultiplyOp ::= ( '||' | '*' | '/' | '%' | '**' | '*%')
+BitShiftOp ::= (LARROW2 | RARROW2)
 
-PrefixOp ::= ('!' | '-' | '~' | '-%' | '&' | 'try' | 'await')
+AdditionOp ::= ( PLUS | MINUS | PLUS2 | PLUSPERCENT | MINUSPERCENT)
+
+MultiplyOp ::= ( PIPE2 | ASTERISK | SLASH | PERCENT | ASTERISK2 | ASTERISKPERCENT)
+
+PrefixOp ::= (EXCLAMATIONMARK | MINUS | TILDE | MINUSPERCENT | AMPERSAND | KEYWORD_try | KEYWORD_await)
 
 PrefixTypeOp ::=
-    ( '?'
-    | 'anyframe' '->'
-    | ArrayTypeStart (ByteAlign | 'const' | 'volatile' | 'allowzero')*
-    | PtrTypeStart ('align' '(' Expr (':' INTEGER_LITERAL ':' INTEGER_LITERAL)? ')' | 'const' | 'volatile' | 'allowzero')*
+    ( QUESTIONMARK
+    | KEYWORD_anyframe MINUSRARROW
+    | ArrayTypeStart (ByteAlign | KEYWORD_const | KEYWORD_volatile | KEYWORD_allowzero)*
+    | PtrTypeStart (KEYWORD_align LPAREN Expr (COLON INTEGER_LITERAL COLON INTEGER_LITERAL)? RPAREN | KEYWORD_const | KEYWORD_volatile | KEYWORD_allowzero)*
     )
 
 SuffixOp ::=
-    ( '[' Expr ('..' Expr?)? ']'
-    | '.' IDENTIFIER
-    | '.*'
-    | '.?'
+    ( LBRACKET Expr (DOT2 Expr?)? RBRACKET
+    | DOT IDENTIFIER
+    | DOTASTERISK
+    | DOTQUESTIONMARK
     )
 
-FnCallArguments ::= '(' ExprList ')'
+FnCallArguments ::= LPAREN ExprList RPAREN
 
 // Ptr specific
-ArrayTypeStart ::= '[' Expr? ']'
+ArrayTypeStart ::= LBRACKET Expr? RBRACKET
 
-PtrTypeStart ::= ('*' | '**' | '[*]' | '[*c]')
+PtrTypeStart ::= (ASTERISK | ASTERISK2 | PTRUNKNOWN | PTRC)
 
 // ContainerDecl specific
-ContainerDeclAuto ::= ContainerDeclType '{' ContainerMembers '}'
+ContainerDeclAuto ::= ContainerDeclType LBRACE ContainerMembers RBRACE
 
 ContainerDeclType ::=
-    ( ('struct' | 'enum' | 'opaque') ('(' Expr ')')?
-    | 'union' ('(' ('enum' ( '(' Expr ')')? | Expr ) ')')?
+    ( (KEYWORD_struct | KEYWORD_enum | KEYWORD_opaque) (LPAREN Expr RPAREN)?
+    | KEYWORD_union (LPAREN (KEYWORD_enum ( LPAREN Expr RPAREN)? | Expr ) RPAREN)?
     )
 
-// Aligment
-ByteAlign ::= 'align' '(' Expr ')'
+// Alignment
+ByteAlign ::= KEYWORD_align LPAREN Expr RPAREN
 
 // Lists
-IdentifierList ::= (IDENTIFIER ',')* IDENTIFIER?
+IdentifierList ::= (IDENTIFIER COMMA)* IDENTIFIER?
 
-SwitchProngList ::= (SwitchProng ',')* SwitchProng?
+SwitchProngList ::= (SwitchProng COMMA)* SwitchProng?
 
-AsmOutputList ::= (AsmOutputItem ',')* AsmOutputItem?
+AsmOutputList ::= (AsmOutputItem COMMA)* AsmOutputItem?
 
-AsmInputList ::= (AsmInputItem ',')* AsmInputItem?
+AsmInputList ::= (AsmInputItem COMMA)* AsmInputItem?
 
-StringList ::= (STRING_LITERAL_SINGLE ',')* STRING_LITERAL_SINGLE?
+StringList ::= (STRING_LITERAL_SINGLE COMMA)* STRING_LITERAL_SINGLE?
 
-ParamDeclList ::= (ParamDecl ',')* ParamDecl?
+ParamDeclList ::= (ParamDecl COMMA)* ParamDecl?
 
-ExprList ::= (Expr ',')* Expr?
+ExprList ::= (Expr COMMA)* Expr?
+
+keyword ::=
+    ( KEYWORD_align | KEYWORD_and | KEYWORD_anyframe | KEYWORD_anytype | KEYWORD_allowzero | KEYWORD_asm | KEYWORD_async
+    | KEYWORD_await | KEYWORD_break | KEYWORD_catch | KEYWORD_comptime | KEYWORD_const | KEYWORD_continue
+    | KEYWORD_defer | KEYWORD_else | KEYWORD_enum | KEYWORD_errdefer | KEYWORD_error | KEYWORD_export | KEYWORD_extern
+    | KEYWORD_false | KEYWORD_fn | KEYWORD_for | KEYWORD_if | KEYWORD_inline | KEYWORD_noalias | KEYWORD_null
+    | KEYWORD_opaque | KEYWORD_or | KEYWORD_orelse | KEYWORD_packed | KEYWORD_pub | KEYWORD_resume | KEYWORD_return
+    | KEYWORD_linksection | KEYWORD_struct | KEYWORD_suspend | KEYWORD_switch | KEYWORD_test | KEYWORD_threadlocal
+    | KEYWORD_true | KEYWORD_try | KEYWORD_undefined | KEYWORD_union | KEYWORD_unreachable | KEYWORD_usingnamespace
+    | KEYWORD_var | KEYWORD_volatile | KEYWORD_while
+    )
 
 
 
