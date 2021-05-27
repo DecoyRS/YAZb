@@ -5,8 +5,8 @@
 
   psiClassPrefix="Zig"
   psiImplClassSuffix="Impl"
-  psiPackage="com.intellij.psi"
-  psiImplPackage="com.intellij.psi.impl"
+  psiPackage="com.github.decoyrs.ziggij.language.psi"
+  psiImplPackage="com.github.decoyrs.ziggij.language.psi.impl"
 
   elementTypeHolderClass="com.github.decoyrs.ziggij.language.psi.ZigTypes"
   elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
@@ -136,7 +136,7 @@
   ]
 }
 
-Root ::= ContainerMembers
+zigFile ::= ContainerMembers
 
 ContainerMembers ::=
     ( TestDecl
