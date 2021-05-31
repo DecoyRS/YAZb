@@ -2,13 +2,22 @@ package com.github.decoyrs.ziggij.language
 
 import com.github.decoyrs.ziggij.language.lexer.ZigLexerAdapter
 import com.github.decoyrs.ziggij.language.psi.ZigTypes
-import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 
 object ZigSyntaxHighlighter: SyntaxHighlighterBase() {
+    val BRACES = arrayOf(
+        ZigTypes.LBRACE,
+        ZigTypes.RBRACE
+    )
+
+    val BRACKETS = arrayOf(
+        ZigTypes.LBRACKET,
+        ZigTypes.RBRACKET
+    )
+
     val KEYWORDS = arrayOf(
         ZigTypes.KEYWORD_ALIGN,
         ZigTypes.KEYWORD_ALLOWZERO,
@@ -61,7 +70,6 @@ object ZigSyntaxHighlighter: SyntaxHighlighterBase() {
         ZigTypes.KEYWORD_VOLATILE,
         ZigTypes.KEYWORD_WHILE
     )
-    val KEYWORD = TextAttributesKey.createTextAttributesKey("ZIG_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
 
     val OPERATORS = arrayOf(
         ZigTypes.AMPERSAND,
@@ -104,7 +112,6 @@ object ZigSyntaxHighlighter: SyntaxHighlighterBase() {
         ZigTypes.PLUSEQUAL,
         ZigTypes.PLUSPERCENT,
         ZigTypes.PLUSPERCENTEQUAL,
-//        ZigTypes.LETTERC,
         ZigTypes.QUESTIONMARK,
         ZigTypes.RARROW,
         ZigTypes.RARROW2,
@@ -115,29 +122,31 @@ object ZigSyntaxHighlighter: SyntaxHighlighterBase() {
         ZigTypes.SLASHEQUAL,
         ZigTypes.TILDE
     )
-    val OPERATOR = TextAttributesKey.createTextAttributesKey("ZIG_OPERATOR", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
 
     val PARENS = arrayOf(
         ZigTypes.LPAREN,
         ZigTypes.RPAREN
     )
-    val PAREN = TextAttributesKey.createTextAttributesKey("ZIG_PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
 
-    val BRACKETS = arrayOf(
-        ZigTypes.LBRACKET,
-        ZigTypes.RBRACKET
-    )
-    val BRACKET = TextAttributesKey.createTextAttributesKey("ZIG_BRACKET", DefaultLanguageHighlighterColors.BRACKETS)
-
-    val BRACES = arrayOf(
-        ZigTypes.LBRACE,
-        ZigTypes.RBRACE
-    )
     val BRACE = TextAttributesKey.createTextAttributesKey("ZIG_BRACE", DefaultLanguageHighlighterColors.BRACES)
+    val BRACKET = TextAttributesKey.createTextAttributesKey("ZIG_BRACKET", DefaultLanguageHighlighterColors.BRACKETS)
+    val BUILTIN_FUNCTION_CALL = TextAttributesKey.createTextAttributesKey("ZIG_BUILTIN_FUNCTION_CALL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
+    val KEYWORD = TextAttributesKey.createTextAttributesKey("ZIG_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
+    val LINE_COMMENT = TextAttributesKey.createTextAttributesKey("ZIG_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
+    val NUMBER = TextAttributesKey.createTextAttributesKey("ZIG_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
+    val OPERATOR = TextAttributesKey.createTextAttributesKey("ZIG_OPERATOR", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
+    val PAREN = TextAttributesKey.createTextAttributesKey("ZIG_PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
+    val SEMICOLON = TextAttributesKey.createTextAttributesKey("ZIG_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON)
+    val STRING = TextAttributesKey.createTextAttributesKey("ZIG_STRING", DefaultLanguageHighlighterColors.STRING)
 
     override fun getHighlightingLexer() = ZigLexerAdapter()
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> = when(tokenType) {
+        ZigTypes.BUILTINIDENTIFIER -> arrayOf(BUILTIN_FUNCTION_CALL)
+        ZigTypes.INTEGER_LITERAL, ZigTypes.FLOAT_LITERAL -> arrayOf(NUMBER)
+        ZigTypes.LINE_COMMENT -> arrayOf(LINE_COMMENT)
+        ZigTypes.SEMICOLON -> arrayOf(SEMICOLON)
+        ZigTypes.STRING_LITERAL_SINGLE, ZigTypes.LINE_STRING -> arrayOf(STRING)
         in BRACES -> arrayOf(BRACE)
         in BRACKETS -> arrayOf(BRACKET)
         in KEYWORDS -> arrayOf(KEYWORD)
