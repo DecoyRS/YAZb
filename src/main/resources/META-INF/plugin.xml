@@ -12,6 +12,8 @@
         <projectService serviceImplementation="com.github.decoyrs.ziggij.services.MyProjectService"/>
         <fileType name="Zig File" implementationClass="com.github.decoyrs.ziggij.ZigFileType" fieldName="INSTANCE" language="Zig" extensions="zig"/>
         <lang.parserDefinition language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigSyntaxHighlighterFactory" />
+        <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
     </extensions>
 
     <applicationListeners>
