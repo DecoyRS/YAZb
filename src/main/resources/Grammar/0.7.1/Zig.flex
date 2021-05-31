@@ -23,7 +23,7 @@ import com.github.decoyrs.ziggij.language.psi.ZigTokenType;
 
 OTHERWISE=[^]
 
-HEX=[0-9a-fA-F]
+HEX = [0-9a-fA-F]
 DEC = [0-9]
 OCT = [0-7]
 BIN = [01]
