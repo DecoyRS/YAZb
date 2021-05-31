@@ -124,12 +124,12 @@
     KEYWORD_volatile="volatile"
     KEYWORD_while="while"
 
-    CHAR_LITERAL="regexp:'(\\x[0-9a-fA-F]{2}|\\u\{[0-9-a-fA-F]+|\\[nrt'\"\\]|[^\\'\n])'"
-    STRING_LITERAL_SINGLE="regexp:\"(\\x[0-9a-fA-F]{2}|\\u\{[0-9-a-fA-F]+|\\[nrt'\"\\]|[^\\\"\n])*\""
-    LINE_STRING="regexp:(\\\\[^\n]*[ \n]*)+"
-    INTEGER_LITERAL="regexp:0b[_01]*[01]|0o[_0-7]+[0-7]|0x(_|[0-9a-fA-F])*[0-9a-fA-F]|[0-9]((_|[0-9])*[0-9])?"
-    FLOAT_LITERAL="regexp:[0-9]+(\.[0-9]+)?" // Simplified
-    IDENTIFIER="regexp:([A-Za-z_][A-Za-z0-9_]*|@\"[^\"]*\")" // Simplified non-ascii
+    CHAR_LITERAL="regexp:'(\\x[0-9a-fA-F]{2}|\\u\{[0-9a-fA-F]+}|\\[nrt'\"\\]|[^\\'\n])'"
+    STRING_LITERAL_SINGLE="regexp:\"(\\x[0-9a-fA-F]{2}|\\u\{[0-9a-fA-F]+}|\\[nrt'\"\\]|[^\\\"\n])*\""
+    LINE_STRING="regexp:(\\\\[^\n]*[ \n]*)+" // Check if space in [ \n] is required
+    INTEGER_LITERAL="regexp:0b[01](_?[01])*|0o[0-7](_?[0-7])*|0x[0-9a-fA-F](_?[0-9a-fA-F])*|[0-9](_?[0-9])*"
+    FLOAT_LITERAL="regexp:(0x[0-9a-fA-F](_?[0-9a-fA-F])*\.[0-9a-fA-F](_?[0-9a-fA-F])*([pP][-+]?[0-9a-fA-F](_?[0-9a-fA-F])*)?)|([0-9](_?[0-9])*\.[0-9](_?[0-9])*([eE][-+]?[0-9](_?[0-9])*)?)|(0x[0-9a-fA-F](_?[0-9a-fA-F])*\.?[pP][-+]?[0-9a-fA-F](_?[0-9a-fA-F])*)|([0-9](_?[0-9])*\.?[eE][-+]?[0-9](_?[0-9])*)"
+    IDENTIFIER="regexp:([A-Za-z_][A-Za-z0-9_]*|@\"(\\x[0-9a-fA-F]{2}|\\u\{[0-9a-fA-F]+}|\\[nrt'\"\\]|[^\\\"\n])*\")"
     BUILTINIDENTIFIER="regexp:@[A-Za-z_][A-Za-z0-9_]*"
     WHITESPACE="regexp:[ \n]+"
     LINE_COMMENT="regexp://[^\n]*"
@@ -137,6 +137,8 @@
 }
 
 zigFile ::= ContainerMembers
+
+STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING)
 
 ContainerMembers ::=
     ( TestDecl
@@ -288,7 +290,7 @@ PrimaryTypeExpr ::=
     | KEYWORD_true
     | KEYWORD_undefined
     | KEYWORD_unreachable
-    | STRING_LITERAL_SINGLE
+    | STRING_LITERAL
     | SwitchExpr
     )
 
@@ -314,15 +316,15 @@ WhileTypeExpr ::= WhilePrefix TypeExpr (KEYWORD_else Payload? TypeExpr)?
 SwitchExpr ::= KEYWORD_switch LPAREN Expr RPAREN LBRACE SwitchProngList RBRACE
 
 // Assembly
-AsmExpr ::= KEYWORD_asm KEYWORD_volatile? LPAREN STRING_LITERAL_SINGLE AsmOutput? RPAREN
+AsmExpr ::= KEYWORD_asm KEYWORD_volatile? LPAREN STRING_LITERAL AsmOutput? RPAREN
 
 AsmOutput ::= COLON AsmOutputList AsmInput?
 
-AsmOutputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL_SINGLE LPAREN (MINUSRARROW TypeExpr | IDENTIFIER) RPAREN
+AsmOutputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL LPAREN (MINUSRARROW TypeExpr | IDENTIFIER) RPAREN
 
 AsmInput ::= COLON AsmInputList AsmClobbers?
 
-AsmInputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL_SINGLE LPAREN Expr RPAREN
+AsmInputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL LPAREN Expr RPAREN
 
 AsmClobbers ::= COLON StringList
 
@@ -432,7 +434,7 @@ AsmOutputList ::= (AsmOutputItem COMMA)* AsmOutputItem?
 
 AsmInputList ::= (AsmInputItem COMMA)* AsmInputItem?
 
-StringList ::= (STRING_LITERAL_SINGLE COMMA)* STRING_LITERAL_SINGLE?
+StringList ::= (STRING_LITERAL COMMA)* STRING_LITERAL?
 
 ParamDeclList ::= (ParamDecl COMMA)* ParamDecl?
 
