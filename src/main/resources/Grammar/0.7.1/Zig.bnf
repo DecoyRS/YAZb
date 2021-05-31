@@ -82,6 +82,7 @@
     KEYWORD_async="async"
     KEYWORD_await="await"
     KEYWORD_break="break"
+    KEYWORD_callconv="callconv"
     KEYWORD_catch="catch"
     KEYWORD_comptime="comptime"
     KEYWORD_const="const"
@@ -160,7 +161,7 @@ TopLevelDecl ::= 'pub'?
 private TopLevelFnProto ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE? | KEYWORD_inline )? FnProto (SEMICOLON | Block)
 private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
-FnProto ::= KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? EXCLAMATIONMARK? (KEYWORD_anytype | TypeExpr)
+FnProto ::= KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? (KEYWORD_anytype | TypeExpr)
 
 VarDecl ::= (KEYWORD_const | KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
@@ -338,6 +339,8 @@ FieldInit ::= DOT IDENTIFIER EQUAL Expr
 WhileContinueExpr ::= COLON LPAREN AssignExpr RPAREN
 
 LinkSection ::= KEYWORD_linksection LPAREN Expr RPAREN
+
+CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 
 ParamDecl ::= (KEYWORD_noalias | KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 

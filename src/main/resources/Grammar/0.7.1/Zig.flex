@@ -115,7 +115,6 @@ INVALID_WHITESPACE = [\s\f\r\t]+
 "+="   { return ZigTypes.PLUSEQUAL; }
 "+%"   { return ZigTypes.PLUSPERCENT; }
 "+%="  { return ZigTypes.PLUSPERCENTEQUAL; }
-// "c"    { return ZigTypes.LETTERC; }
 "?"    { return ZigTypes.QUESTIONMARK; }
 ">"    { return ZigTypes.RARROW; }
 ">>"   { return ZigTypes.RARROW2; }
@@ -138,7 +137,7 @@ asm             { return ZigTypes.KEYWORD_ASM; }
 async           { return ZigTypes.KEYWORD_ASYNC; }
 await           { return ZigTypes.KEYWORD_AWAIT; }
 break           { return ZigTypes.KEYWORD_BREAK; }
-// callconv        { return ZigTypes.CALLCONV_KEYWORD; }
+callconv        { return ZigTypes.KEYWORD_CALLCONV; }
 catch           { return ZigTypes.KEYWORD_CATCH; }
 comptime        { return ZigTypes.KEYWORD_COMPTIME; }
 const           { return ZigTypes.KEYWORD_CONST; }
@@ -157,7 +156,6 @@ if              { return ZigTypes.KEYWORD_IF; }
 inline          { return ZigTypes.KEYWORD_INLINE; }
 noalias         { return ZigTypes.KEYWORD_NOALIAS; }
 nosuspend       { return ZigTypes.KEYWORD_NOSUSPEND; }
-// noinline        { return ZigTypes.NOINLINE_KEYWORD; }
 null            { return ZigTypes.KEYWORD_NULL; }
 opaque          { return ZigTypes.KEYWORD_OPAQUE; }
 or              { return ZigTypes.KEYWORD_OR; }
