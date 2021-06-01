@@ -38,7 +38,6 @@ CHAR_CHAR = ({CHAR_ESCAPE} | [^\\'\n])
 STRING_CHAR = ({CHAR_ESCAPE} | [^\\\"\n])
 LINE_COMMENT = "//"[^\n]*
 LINE_STRING = ("\\\\" [^\n]* [ \n]*)+
-SKIP = ([ \n] | {LINE_COMMENT})*
 
 CHAR_LITERAL = "'" {CHAR_CHAR} "'"
 INCOMPLETE_CHAR = "'" {CHAR_CHAR}
@@ -55,7 +54,6 @@ INTEGER_LITERAL = (
     |      {DEC_INT}
 )
 STRING_LITERAL_SINGLE = "\"" {STRING_CHAR}* "\""
-STRING_LITERAL = ({STRING_LITERAL_SINGLE} | {LINE_STRING})
 INCOMPLETE_STRING     = "\"" {STRING_CHAR}*
 IDENTIFIER = (// !keyword
       [A-Za-z_] [A-Za-z0-9_]*

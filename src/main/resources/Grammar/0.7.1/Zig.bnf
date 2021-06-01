@@ -12,6 +12,8 @@
   elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
   tokenTypeClass="com.github.decoyrs.ziggij.language.psi.ZigTokenType"
 
+  psiImplUtilClass="com.github.decoyrs.ziggij.language.psi.impl.ZigPsiImplUtil"
+
   extends('.*Expr')=Expr
 
   tokens = [
