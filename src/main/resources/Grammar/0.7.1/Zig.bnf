@@ -139,7 +139,7 @@
   ]
 }
 
-zigFile ::= ContainerMembers
+zigFile ::= ContainerMembers <<eof>>
 
 STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING)
 
@@ -163,11 +163,11 @@ TopLevelDecl ::= 'pub'?
 private TopLevelFnProto ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE? | KEYWORD_inline )? FnProto (SEMICOLON | Block)
 private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
-FnProto ::= KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? (KEYWORD_anytype | TypeExpr)
+FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? (KEYWORD_anytype | TypeExpr)
 
-VarDecl ::= (KEYWORD_const | KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
+VarDecl ::= (KEYWORD_const | KEYWORD_var) Symbol (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField ::= KEYWORD_comptime? IDENTIFIER (COLON TypeExpr)? (EQUAL Expr)?
+ContainerField ::= KEYWORD_comptime? Symbol (COLON TypeExpr)? (EQUAL Expr)?
 
 // Block level
 Statement ::=
@@ -275,18 +275,18 @@ PrimaryTypeExpr ::=
     ( BUILTINIDENTIFIER FnCallArguments
     | CHAR_LITERAL
     | ContainerDecl
-    | DOT IDENTIFIER
+    | DOT Symbol
     | DOT InitList
     | ErrorSetDecl
     | FLOAT_LITERAL
     | FnProto
     | GroupedExpr
     | LabeledTypeExpr
-    | IDENTIFIER
+    | Symbol
     | IfTypeExpr
     | INTEGER_LITERAL
     | KEYWORD_comptime TypeExpr
-    | KEYWORD_error DOT IDENTIFIER
+    | KEYWORD_error DOT Symbol
     | KEYWORD_false
     | KEYWORD_null
     | KEYWORD_anyframe
@@ -323,20 +323,20 @@ AsmExpr ::= KEYWORD_asm KEYWORD_volatile? LPAREN STRING_LITERAL AsmOutput? RPARE
 
 AsmOutput ::= COLON AsmOutputList AsmInput?
 
-AsmOutputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL LPAREN (MINUSRARROW TypeExpr | IDENTIFIER) RPAREN
+AsmOutputItem ::= LBRACKET Symbol RBRACKET STRING_LITERAL LPAREN (MINUSRARROW TypeExpr | Symbol) RPAREN
 
 AsmInput ::= COLON AsmInputList AsmClobbers?
 
-AsmInputItem ::= LBRACKET IDENTIFIER RBRACKET STRING_LITERAL LPAREN Expr RPAREN
+AsmInputItem ::= LBRACKET Symbol RBRACKET STRING_LITERAL LPAREN Expr RPAREN
 
 AsmClobbers ::= COLON StringList
 
 // Helper grammar
-BreakLabel ::= COLON IDENTIFIER
+BreakLabel ::= COLON Symbol
 
-BlockLabel ::= IDENTIFIER COLON
+BlockLabel ::= Symbol COLON
 
-FieldInit ::= DOT IDENTIFIER EQUAL Expr
+FieldInit ::= DOT Symbol EQUAL Expr
 
 WhileContinueExpr ::= COLON LPAREN AssignExpr RPAREN
 
@@ -344,7 +344,7 @@ LinkSection ::= KEYWORD_linksection LPAREN Expr RPAREN
 
 CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 
-ParamDecl ::= (KEYWORD_noalias | KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
+ParamDecl ::= (KEYWORD_noalias | KEYWORD_comptime)? (Symbol COLON)? ParamType
 
 ParamType ::=
     ( KEYWORD_anytype
@@ -360,11 +360,11 @@ WhilePrefix ::= KEYWORD_while LPAREN Expr RPAREN PtrPayload? WhileContinueExpr?
 ForPrefix ::= KEYWORD_for LPAREN Expr RPAREN PtrIndexPaylod
 
 // Payloads
-Payload ::= PIPE IDENTIFIER PIPE
+Payload ::= PIPE Symbol PIPE
 
-PtrPayload ::= PIPE ASTERISK? IDENTIFIER PIPE
+PtrPayload ::= PIPE ASTERISK? Symbol PIPE
 
-PtrIndexPaylod ::= PIPE ASTERISK? IDENTIFIER (COMMA IDENTIFIER)? PIPE
+PtrIndexPaylod ::= PIPE ASTERISK? Symbol (COMMA Symbol)? PIPE
 
 // Switch specific
 SwitchProng ::= SwitchCase EQUALRARROW PtrPayload? AssignExpr
@@ -407,7 +407,7 @@ PrefixTypeOp ::=
 
 SuffixOp ::=
     ( LBRACKET Expr (DOT2 Expr?)? RBRACKET
-    | DOT IDENTIFIER
+    | DOT Symbol
     | DOTASTERISK
     | DOTQUESTIONMARK
     )
@@ -431,7 +431,7 @@ ContainerDeclType ::=
 ByteAlign ::= KEYWORD_align LPAREN Expr RPAREN
 
 // Lists
-IdentifierList ::= (IDENTIFIER COMMA)* IDENTIFIER?
+IdentifierList ::= (Symbol COMMA)* Symbol?
 
 SwitchProngList ::= (SwitchProng COMMA)* SwitchProng?
 
@@ -445,7 +445,7 @@ ParamDeclList ::= (ParamDecl COMMA)* ParamDecl?
 
 ExprList ::= (Expr COMMA)* Expr?
 
-keyword ::=
+private keyword ::=
     ( KEYWORD_align | KEYWORD_and | KEYWORD_anyframe | KEYWORD_anytype | KEYWORD_allowzero | KEYWORD_asm | KEYWORD_async
     | KEYWORD_await | KEYWORD_break | KEYWORD_catch | KEYWORD_comptime | KEYWORD_const | KEYWORD_continue
     | KEYWORD_defer | KEYWORD_else | KEYWORD_enum | KEYWORD_errdefer | KEYWORD_error | KEYWORD_export | KEYWORD_extern
@@ -456,7 +456,4 @@ keyword ::=
     | KEYWORD_var | KEYWORD_volatile | KEYWORD_while
     )
 
-
-
-
-
+Symbol ::= !keyword IDENTIFIER

@@ -25,7 +25,7 @@ class ZigColorSettingsPage : ColorSettingsPage {
 
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName() = ZigFileType.INSTANCE.name
+    override fun getDisplayName() = "Zig"
 
     override fun getIcon() = ZigIcons.FILE_ICON
 

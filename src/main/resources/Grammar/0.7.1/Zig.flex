@@ -56,10 +56,10 @@ INTEGER_LITERAL = (
 STRING_LITERAL_SINGLE = "\"" {STRING_CHAR}* "\""
 INCOMPLETE_STRING     = "\"" {STRING_CHAR}*
 IDENTIFIER = (// !keyword
-      [A-Za-z_] [A-Za-z0-9_]*
-    | "@\"" {STRING_CHAR}* "\""
+      [A-Za-z_][A-Za-z0-9_]*
+    | "@\""{STRING_CHAR}*"\""
     )
-BUILTINIDENTIFIER = "@" [A-Za-z_][A-Za-z0-9_]*
+BUILTINIDENTIFIER = "@"[A-Za-z_][A-Za-z0-9_]*
 
 WHITESPACE = [ \n]+
 INVALID_WHITESPACE = [\s\f\r\t]+
