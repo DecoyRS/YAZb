@@ -152,7 +152,7 @@ ContainerDeclarations ::=
     ( TestDecl
     | TopLevelComptime
     | DOC_COMMENT? KEYWORD_pub? TopLevelDecl
-    )* ContainerDeclarations?
+    )*
 
 TestDecl ::= DOC_COMMENT? KEYWORD_test STRING_LITERAL_SINGLE? Block
 
