@@ -168,8 +168,16 @@ private TopLevelFnProto ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SING
 private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
 FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? TypeExpr
+{
+	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
+	extends=['com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl']
+}
 
 VarDecl ::= (KEYWORD_const | KEYWORD_var) Symbol (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
+{
+	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
+	extends=['com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl']
+}
 
 ContainerField ::= DOC_COMMENT? KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
@@ -350,8 +358,15 @@ LinkSection ::= KEYWORD_linksection LPAREN Expr RPAREN
 CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 
 ParamDecl ::=
-    ( DOC_COMMENT? (KEYWORD_noalias | KEYWORD_comptime)? (Symbol COLON)? ParamType
-    | DOT3 )
+    ( ParamNamedDecl
+    | ParamVarargDecl )
+ParamNamedDecl ::= DOC_COMMENT? (KEYWORD_noalias | KEYWORD_comptime)? (Symbol COLON)? ParamType
+{
+	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
+	extends=['com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl']
+}
+
+ParamVarargDecl ::= DOT3
 
 ParamType ::=
     ( KEYWORD_anytype
