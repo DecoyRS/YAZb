@@ -146,7 +146,7 @@ zigFile ::= CONTAINER_DOC_COMMENT? ContainerMembers <<eof>>
 
 STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING)
 
-ContainerMembers ::= ContainerDeclarations (ContainerField COMMA)* (ContainerField | ContainerDeclarations)
+ContainerMembers ::= ContainerDeclarations ((ContainerField COMMA)+ (ContainerField | ContainerDeclarations))?
 
 ContainerDeclarations ::=
     ( TestDecl
@@ -170,13 +170,13 @@ private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SING
 FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? TypeExpr
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	extends=['com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl']
+	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
 }
 
 VarDecl ::= (KEYWORD_const | KEYWORD_var) Symbol (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	extends=['com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl']
+	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
 }
 
 ContainerField ::= DOC_COMMENT? KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
@@ -363,7 +363,7 @@ ParamDecl ::=
 ParamNamedDecl ::= DOC_COMMENT? (KEYWORD_noalias | KEYWORD_comptime)? (Symbol COLON)? ParamType
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	extends=['com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl']
+	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
 }
 
 ParamVarargDecl ::= DOT3
