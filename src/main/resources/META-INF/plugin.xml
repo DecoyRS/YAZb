@@ -6,6 +6,7 @@
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.decoyrs.ziggij.services.MyApplicationService"/>
@@ -15,6 +16,13 @@
         <lang.syntaxHighlighterFactory language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigSyntaxHighlighterFactory" />
         <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
         <completion.contributor language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigCompletionContributor" />
+<!-- Project Module -->
+        <moduleType id="ZIG_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigModuleType"/>
+        <moduleBuilder
+                builderClass="com.github.decoyrs.ziggij.projectModel.ZigModuleBuilder"
+                id="ZIG_STEP"
+                order="first"
+        />
     </extensions>
 
     <applicationListeners>
