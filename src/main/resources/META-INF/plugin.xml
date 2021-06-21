@@ -17,10 +17,16 @@
         <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
         <completion.contributor language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigCompletionContributor" />
 <!-- Project Module -->
-        <moduleType id="ZIG_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigModuleType"/>
+        <moduleType id="ZIG_EXECUTABLE_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigExecutableModuleType"/>
+        <moduleType id="ZIG_LIBRARY_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigLibraryModuleType"/>
         <moduleBuilder
-                builderClass="com.github.decoyrs.ziggij.projectModel.ZigModuleBuilder"
-                id="ZIG_STEP"
+                builderClass="com.github.decoyrs.ziggij.projectModel.ZigExecutableModuleBuilder"
+                id="ZIG_EXECUTABLE_STEP"
+                order="first"
+        />
+        <moduleBuilder
+                builderClass="com.github.decoyrs.ziggij.projectModel.ZigLibraryModuleBuilder"
+                id="ZIG_LIBRARY_STEP"
                 order="first"
         />
     </extensions>

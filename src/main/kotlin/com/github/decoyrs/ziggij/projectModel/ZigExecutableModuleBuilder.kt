@@ -8,11 +8,11 @@ import com.intellij.openapi.projectRoots.SdkTypeId
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.util.Disposer
 
-class ZigModuleBuilder : ModuleBuilder() {
-    override fun getModuleType() = ZigModuleType.INSTANCE
+class ZigExecutableModuleBuilder : ModuleBuilder() {
+    override fun getModuleType() = ZigExecutableModuleType.INSTANCE
     override fun isSuitableSdkType(sdkType: SdkTypeId?) = true
     override fun getCustomOptionsStep(context: WizardContext, parentDisposable: Disposable) =
-        ZigProjectWizardStep(context).apply {
+        ZigExecutableProjectWizardStep(context).apply {
             Disposer.register(parentDisposable, this::disposeUIResources)
         }
 
@@ -20,7 +20,7 @@ class ZigModuleBuilder : ModuleBuilder() {
         wizardContext: WizardContext,
         modulesProvider: ModulesProvider
     ): Array<ModuleWizardStep> {
-        return arrayOf(ZigProjectWizardStep(wizardContext))
+        return arrayOf(ZigExecutableProjectWizardStep(wizardContext))
     }
 
 }
