@@ -151,33 +151,42 @@ ContainerMembers ::= ContainerDeclarations ((ContainerField COMMA)+ (ContainerFi
 ContainerDeclarations ::=
     ( TestDecl
     | TopLevelComptime
-    | DOC_COMMENT? KEYWORD_pub? TopLevelDecl
+    | TopLevelDecl
     )*
 
-TestDecl ::= DOC_COMMENT? KEYWORD_test STRING_LITERAL_SINGLE? Block
+TestDecl ::= DOC_COMMENT? KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
 
-TopLevelComptime ::= DOC_COMMENT? KEYWORD_comptime BlockExpr
+TopLevelComptime ::= DOC_COMMENT? KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
 
-TopLevelDecl ::=
+TopLevelDecl ::= DOC_COMMENT? KEYWORD_pub?
     ( TopLevelFnProto
     | TopLevelVarDecl
-    | KEYWORD_usingnamespace Expr SEMICOLON
+    | UsingNamespaceDecl
     )
 
 private TopLevelFnProto ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE? | (KEYWORD_inline | KEYWORD_noinline))? FnProto (SEMICOLON | Block)
 private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
-FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? TypeExpr
+UsingNamespaceDecl ::= KEYWORD_usingnamespace Expr SEMICOLON
+
+FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? FnReturnTypeExpr
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+//	pin='KEYWORD_fn'
+//	recoverWhile=FnProto_private
 }
+FnReturnTypeExpr ::= EXCLAMATIONMARK? TypeExpr
+private FnProto_private ::= !(SEMICOLON | LBRACE)
 
 VarDecl ::= (KEYWORD_const | KEYWORD_var) Symbol (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+//	pin=1
+//	recoverWhile=VarDecl_recover
 }
+private VarDecl_recover ::= !(SEMICOLON)
 
 ContainerField ::= DOC_COMMENT? KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
