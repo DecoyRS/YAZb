@@ -293,7 +293,7 @@ SuffixExpr ::=
     )
 
 PrimaryTypeExpr ::=
-    ( BUILTINIDENTIFIER FnCallArguments
+    ( BuiltinInvoke
     | CHAR_LITERAL
     | ContainerDecl
     | DOT Symbol
@@ -317,6 +317,9 @@ PrimaryTypeExpr ::=
     | STRING_LITERAL
     | SwitchExpr
     )
+
+upper BuiltinInvoke ::= BuiltinSymbol FnCallArguments
+BuiltinSymbol ::= BUILTINIDENTIFIER
 
 ContainerDecl ::= (KEYWORD_extern | KEYWORD_packed)? ContainerDeclAuto
 

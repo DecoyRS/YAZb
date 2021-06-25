@@ -195,7 +195,7 @@ class ZigCompletionContributor : CompletionContributor() {
         ).map {
             LookupElementBuilder.create(it)
                 .withIcon(ZigIcons.ZIG_BIG_ICON)
-                .withTypeText(ZiggIjBundle.message("ziggij.completion.keywords"))
+                .withTypeText(ZiggIjBundle.message("ziggij.completion.stdLibs"))
                 .bold()
         }
     }
@@ -221,8 +221,8 @@ class ZigCompletionContributor : CompletionContributor() {
     }
 
     private fun importString() = psiElement(ZigTypes.STRING_LITERAL_SINGLE).withSuperParent(5,
-        psiElement(ZigTypes.PRIMARY_TYPE_EXPR).withChild(
-            psiElement().afterLeaf("@import")
+        psiElement(ZigTypes.BUILTIN_INVOKE).withFirstChild(
+            psiElement(ZigTypes.BUILTIN_SYMBOL).withText("@import")
         )
     )
 }
