@@ -30,6 +30,9 @@
                 id="ZIG_LIBRARY_STEP"
                 order="first"
         />
+        <!-- Usages Provider -->
+
+        <lang.findUsagesProvider language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigFindUsagesProvider"/>
     </extensions>
 
     <applicationListeners>

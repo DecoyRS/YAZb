@@ -2,7 +2,7 @@ package com.github.decoyrs.ziggij.language.psi.impl
 
 import com.github.decoyrs.ziggij.ZigLanguage
 import com.github.decoyrs.ziggij.language.psi.ZigNamedElement
-import com.github.decoyrs.ziggij.language.psi.ZigSymbol
+import com.github.decoyrs.ziggij.language.psi.ZigSymbolDecl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.Project
@@ -18,8 +18,8 @@ fun fromText(string: String, project: Project): PsiElement = PsiFileFactory
     .let { (it as? PsiErrorElement)?.firstChild ?: it }
 
 abstract class ZigNamedElementImpl(node: ASTNode): ASTWrapperPsiElement(node), ZigNamedElement {
-    override fun getNameIdentifier() = findChildOfType(this, ZigSymbol::class.java)
-    override fun setName(name: String) = also { nameIdentifier?.replace(fromText(name, project)) }
+    override fun getNameIdentifier() = findChildOfType(this, ZigSymbolDecl::class.java)
+    override fun setName(name: String) = nameIdentifier?.replace(fromText(name, project))
     override fun getName() = nameIdentifier?.text
-
+    override fun getTextOffset(): Int = nameIdentifier?.textOffset ?: super.getTextOffset()
 }
