@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" allow-bundled-update="true">
     <id>com.github.decoyrs.ziggij</id>
     <name>ZiggIJ</name>
     <vendor>decoyrs</vendor>
@@ -16,7 +16,7 @@
         <lang.syntaxHighlighterFactory language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigSyntaxHighlighterFactory" />
         <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
         <completion.contributor language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigCompletionContributor" />
-        <psi.referenceContributor language="Zig" implementation="com.github.decoyrs.ziggij.language.ZigReferenceContributor" />
+        <psi.referenceContributor language="Zig" implementation="com.github.decoyrs.ziggij.language.core.resolve.ref.ZigReferenceContributor" />
 <!-- Project Module -->
         <moduleType id="ZIG_EXECUTABLE_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigExecutableModuleType"/>
         <moduleType id="ZIG_LIBRARY_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigLibraryModuleType"/>

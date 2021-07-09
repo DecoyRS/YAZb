@@ -1,4 +1,4 @@
-package com.github.decoyrs.ziggij.language
+package com.github.decoyrs.ziggij.language.core.resolve.ref
 
 import com.github.decoyrs.ziggij.language.core.ZigPsiPattern
 import com.github.decoyrs.ziggij.language.psi.ZigStringLiteral
