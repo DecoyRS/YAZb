@@ -16,6 +16,7 @@
         <lang.syntaxHighlighterFactory language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigSyntaxHighlighterFactory" />
         <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
         <completion.contributor language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigCompletionContributor" />
+        <psi.referenceContributor language="Zig" implementation="com.github.decoyrs.ziggij.language.ZigReferenceContributor" />
 <!-- Project Module -->
         <moduleType id="ZIG_EXECUTABLE_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigExecutableModuleType"/>
         <moduleType id="ZIG_LIBRARY_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigLibraryModuleType"/>

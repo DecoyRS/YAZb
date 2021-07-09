@@ -2,6 +2,7 @@ package com.github.decoyrs.ziggij.language
 
 import Icons.ZigIcons
 import com.github.decoyrs.ziggij.ZiggIjBundle
+import com.github.decoyrs.ziggij.language.core.ZigPsiPattern
 import com.github.decoyrs.ziggij.language.psi.ZigTypes
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
@@ -211,7 +212,7 @@ class ZigCompletionContributor : CompletionContributor() {
             ZigCompletionProvider(BUILTINS))
         extend(
             CompletionType.BASIC,
-            importString(),
+            ZigPsiPattern.importString,
             ZigCompletionProvider(STD_LIBS)
         )
     }
@@ -219,10 +220,4 @@ class ZigCompletionContributor : CompletionContributor() {
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         super.fillCompletionVariants(parameters, result)
     }
-
-    private fun importString() = psiElement(ZigTypes.STRING_LITERAL_SINGLE).withSuperParent(5,
-        psiElement(ZigTypes.BUILTIN_INVOKE).withFirstChild(
-            psiElement(ZigTypes.BUILTIN_SYMBOL).withText("@import")
-        )
-    )
 }

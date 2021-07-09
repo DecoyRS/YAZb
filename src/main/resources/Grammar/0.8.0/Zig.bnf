@@ -144,7 +144,12 @@
 
 zigFile ::= CONTAINER_DOC_COMMENT? ContainerMembers <<eof>>
 
-STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING)
+STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING) {
+    implements=[
+        "com.intellij.psi.ContributedReferenceHost"
+        ]
+    mixin="com.github.decoyrs.ziggij.language.psi.ZigStringLiteralMixin"
+}
 
 ContainerMembers ::= ContainerDeclarations ((ContainerField COMMA)+ (ContainerField | ContainerDeclarations))?
 
@@ -169,7 +174,7 @@ private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SING
 
 UsingNamespaceDecl ::= KEYWORD_usingnamespace Expr SEMICOLON
 
-FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? FnReturnTypeExpr
+FnProto ::= KEYWORD_fn SymbolDecl? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? FnReturnTypeExpr
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
@@ -179,7 +184,7 @@ FnProto ::= KEYWORD_fn Symbol? LPAREN ParamDeclList RPAREN ByteAlign? LinkSectio
 FnReturnTypeExpr ::= EXCLAMATIONMARK? TypeExpr
 private FnProto_private ::= !(SEMICOLON | LBRACE)
 
-VarDecl ::= (KEYWORD_const | KEYWORD_var) Symbol (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
+VarDecl ::= (KEYWORD_const | KEYWORD_var) SymbolDecl (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
@@ -372,7 +377,7 @@ CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 ParamDecl ::=
     ( ParamNamedDecl
     | ParamVarargDecl )
-ParamNamedDecl ::= DOC_COMMENT? (KEYWORD_noalias | KEYWORD_comptime)? (Symbol COLON)? ParamType
+ParamNamedDecl ::= DOC_COMMENT? (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
@@ -492,3 +497,4 @@ private keyword ::=
     )
 
 Symbol ::= !keyword IDENTIFIER
+SymbolDecl ::= !keyword IDENTIFIER
