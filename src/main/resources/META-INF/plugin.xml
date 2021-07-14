@@ -14,6 +14,7 @@
         <fileType name="Zig File" implementationClass="com.github.decoyrs.ziggij.ZigFileType" fieldName="INSTANCE" language="Zig" extensions="zig"/>
         <lang.parserDefinition language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigSyntaxHighlighterFactory" />
+        <lang.foldingBuilder language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigFoldingBuilder" />
         <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
         <completion.contributor language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigCompletionContributor" />
         <psi.referenceContributor language="Zig" implementation="com.github.decoyrs.ziggij.language.core.resolve.ref.ZigReferenceContributor" />
