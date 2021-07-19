@@ -1,6 +1,7 @@
 {
   parserClass="com.github.decoyrs.ziggij.language.parser.ZigParser"
 
+  implements="com.github.decoyrs.ziggij.language.psi.ZigElement"
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
   psiClassPrefix="Zig"
@@ -362,8 +363,15 @@ AsmClobbers ::= COLON StringList
 
 // Helper grammar
 BreakLabel ::= COLON Symbol
+{
+    mixin="com.github.decoyrs.ziggij.language.psi.ZigBreakLabelMixin"
+}
 
-BlockLabel ::= Symbol COLON
+BlockLabel ::= SymbolDecl COLON
+{
+	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
+	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+}
 
 FieldInit ::= DOT Symbol EQUAL Expr
 
