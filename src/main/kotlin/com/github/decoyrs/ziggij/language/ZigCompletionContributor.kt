@@ -192,7 +192,7 @@ class ZigCompletionContributor : CompletionContributor() {
         ).map {
             LookupElementBuilder.create(it)
                 .withIcon(ZigIcons.ZIG_BIG_ICON)
-                .withTypeText(ZiggIjBundle.message("ziggij.completion.keywords"))
+                .withTypeText(ZiggIjBundle.message("ziggij.completion.builtins"))
                 .bold()
         }
 
@@ -214,7 +214,7 @@ class ZigCompletionContributor : CompletionContributor() {
             ZigCompletionProvider(KEYWORDS))
         extend(
             CompletionType.BASIC,
-            psiElement().afterLeaf("@").andNot(psiElement().afterLeaf(".")),
+            psiElement(ZigTypes.BUILTINIDENTIFIER),
             ZigCompletionProvider(BUILTINS))
         extend(
             CompletionType.BASIC,

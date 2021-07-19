@@ -192,7 +192,7 @@ BUILTINIDENTIFIER = "@"[A-Za-z_][A-Za-z0-9_]*
     {INTEGER_LITERAL}       { return ZigTypes.INTEGER_LITERAL; }
     {FLOAT_LITERAL}         { return ZigTypes.FLOAT_LITERAL; }
 
-    {BUILTINIDENTIFIER}    { return ZigTypes.BUILTINIDENTIFIER; }
+    {BUILTINIDENTIFIER}     { return ZigTypes.BUILTINIDENTIFIER; }
     {IDENTIFIER}            { return ZigTypes.IDENTIFIER; }
 
     "////" .*               { return ZigTypes.LINE_COMMENT; }
