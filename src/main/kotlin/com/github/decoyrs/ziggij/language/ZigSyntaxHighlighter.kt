@@ -1,3 +1,5 @@
+@file:Suppress("MaximumLineLength")
+
 package com.github.decoyrs.ziggij.language
 
 import com.github.decoyrs.ziggij.language.lexer.ZigLexerAdapter
@@ -7,7 +9,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 
-object ZigSyntaxHighlighter: SyntaxHighlighterBase() {
+object ZigSyntaxHighlighter : SyntaxHighlighterBase() {
     val BRACES = arrayOf(
         ZigTypes.LBRACE,
         ZigTypes.RBRACE
@@ -141,7 +143,7 @@ object ZigSyntaxHighlighter: SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = ZigLexerAdapter()
 
-    override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> = when(tokenType) {
+    override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> = when (tokenType) {
         ZigTypes.BUILTINIDENTIFIER -> arrayOf(BUILTIN_FUNCTION_CALL)
         ZigTypes.INTEGER_LITERAL, ZigTypes.FLOAT_LITERAL -> arrayOf(NUMBER)
         ZigTypes.LINE_COMMENT -> arrayOf(LINE_COMMENT)

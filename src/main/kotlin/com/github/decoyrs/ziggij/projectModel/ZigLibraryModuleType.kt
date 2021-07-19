@@ -5,10 +5,13 @@ import com.github.decoyrs.ziggij.ZiggIjBundle
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.module.ModuleTypeManager
 
-class ZigLibraryModuleType: ModuleType<ZigLibraryModuleBuilder>(ID) {
+class ZigLibraryModuleType : ModuleType<ZigLibraryModuleBuilder>(ID) {
     companion object {
-        const val ID ="ZIG_LIBRARY_MODULE_TYPE"
-        val INSTANCE: ZigLibraryModuleType by lazy { ModuleTypeManager.getInstance().findByID(ID) as ZigLibraryModuleType}
+        @Suppress("HardCodedStringLiteral")
+        const val ID = "ZIG_LIBRARY_MODULE_TYPE"
+        val INSTANCE: ZigLibraryModuleType by lazy {
+            ModuleTypeManager.getInstance().findByID(ID) as ZigLibraryModuleType
+        }
     }
 
     override fun createModuleBuilder() = ZigLibraryModuleBuilder()

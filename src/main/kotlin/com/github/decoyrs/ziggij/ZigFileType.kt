@@ -1,8 +1,9 @@
+@file:Suppress("HardCodedStringLiteral")
+
 package com.github.decoyrs.ziggij
 
 import Icons.ZigIcons
 import com.intellij.openapi.fileTypes.LanguageFileType
-import javax.swing.Icon
 
 class ZigFileType : LanguageFileType(ZigLanguage.INSTANCE) {
     companion object {

@@ -5,10 +5,13 @@ import com.github.decoyrs.ziggij.ZiggIjBundle
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.module.ModuleTypeManager
 
-class ZigExecutableModuleType: ModuleType<ZigExecutableModuleBuilder>(ID) {
+class ZigExecutableModuleType : ModuleType<ZigExecutableModuleBuilder>(ID) {
     companion object {
-        const val ID ="ZIG_EXECUTABLE_MODULE_TYPE"
-        val INSTANCE: ZigExecutableModuleType by lazy {ModuleTypeManager.getInstance().findByID(ID) as ZigExecutableModuleType}
+        @Suppress("HardCodedStringLiteral")
+        const val ID = "ZIG_EXECUTABLE_MODULE_TYPE"
+        val INSTANCE: ZigExecutableModuleType by lazy {
+            ModuleTypeManager.getInstance().findByID(ID) as ZigExecutableModuleType
+        }
     }
 
     override fun createModuleBuilder() = ZigExecutableModuleBuilder()

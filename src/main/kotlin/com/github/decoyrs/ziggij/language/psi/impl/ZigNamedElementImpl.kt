@@ -17,7 +17,7 @@ fun fromText(string: String, project: Project): PsiElement = PsiFileFactory
     .firstChild
     .let { (it as? PsiErrorElement)?.firstChild ?: it }
 
-abstract class ZigNamedElementImpl(node: ASTNode): ASTWrapperPsiElement(node), ZigNamedElement {
+abstract class ZigNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), ZigNamedElement {
     override fun getNameIdentifier() = findChildOfType(this, ZigSymbolDecl::class.java)
     override fun setName(name: String) = nameIdentifier?.replace(fromText(name, project))
     override fun getName() = nameIdentifier?.text

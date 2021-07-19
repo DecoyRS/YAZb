@@ -5,11 +5,11 @@ import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.PsiTreeUtil.treeWalkUp
-import com.intellij.util.PairProcessor
 
-class ZigBreakLabelReference(private val zigBreakLabel: ZigBreakLabel) : PsiPolyVariantReferenceBase<ZigElement>(zigBreakLabel.symbol), ZigReference {
+class ZigBreakLabelReference(private val zigBreakLabel: ZigBreakLabel) :
+    PsiPolyVariantReferenceBase<ZigElement>(zigBreakLabel.symbol), ZigReference {
     override fun getElement() = zigBreakLabel.symbol
-    override fun getCanonicalText():String = zigBreakLabel.symbol.text
+    override fun getCanonicalText(): String = zigBreakLabel.symbol.text
     override fun getRangeInElement() = TextRange(0, zigBreakLabel.symbol.textLength)
 
     override fun isSoft() = false
@@ -18,32 +18,24 @@ class ZigBreakLabelReference(private val zigBreakLabel: ZigBreakLabel) : PsiPoly
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val file = element.containingFile ?: return emptyArray()
-        if(element.isValid.not()) return emptyArray()
+        if (element.isValid.not()) return emptyArray()
 
         val result = arrayListOf<ResolveResult>()
         treeWalkUp(element, file) { scope, _ ->
-            if(scope !is ZigElement) {
+            if (scope !is ZigElement) {
                 return@treeWalkUp false
             }
-            when(scope) {
-                is ZigBlockExpr -> if(
-                    scope.blockLabel != null
-                ) {
+            when (scope) {
+                is ZigBlockExpr -> if (scope.blockLabel != null) {
                     result.add(PsiElementResolveResult(scope.blockLabel!!.symbolDecl))
                 }
-                is ZigPrimaryExpr -> if(
-                    scope.blockLabel != null
-                ) {
+                is ZigPrimaryExpr -> if (scope.blockLabel != null) {
                     result.add(PsiElementResolveResult(scope.blockLabel!!.symbolDecl))
                 }
-                is ZigLabeledStatement -> if(
-                    scope.blockLabel != null
-                ) {
+                is ZigLabeledStatement -> if (scope.blockLabel != null) {
                     result.add(PsiElementResolveResult(scope.blockLabel!!.symbolDecl))
                 }
-                is ZigLabeledTypeExpr -> if(
-                    scope.blockLabel != null
-                ) {
+                is ZigLabeledTypeExpr -> if (scope.blockLabel != null) {
                     result.add(PsiElementResolveResult(scope.blockLabel!!.symbolDecl))
                 }
             }
@@ -51,12 +43,4 @@ class ZigBreakLabelReference(private val zigBreakLabel: ZigBreakLabel) : PsiPoly
         }
         return result.toTypedArray()
     }
-
-    private class Processor : PairProcessor<ZigElement, ZigElement> {
-        override fun process(scope: ZigElement, prevParent: ZigElement?): Boolean {
-            TODO("Not yet implemented")
-        }
-
-    }
-
 }

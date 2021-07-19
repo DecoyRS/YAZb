@@ -12,7 +12,7 @@ class ZigLibraryModuleBuilder : ModuleBuilder() {
     override fun getModuleType() = ZigLibraryModuleType.INSTANCE
     override fun isSuitableSdkType(sdkType: SdkTypeId?) = true
     override fun getCustomOptionsStep(context: WizardContext, parentDisposable: Disposable) =
-        ZigLibraryProjectWizardStep(context).apply {
+        ZigLibraryProjectWizardStep().apply {
             Disposer.register(parentDisposable, this::disposeUIResources)
         }
 
@@ -20,7 +20,6 @@ class ZigLibraryModuleBuilder : ModuleBuilder() {
         wizardContext: WizardContext,
         modulesProvider: ModulesProvider
     ): Array<ModuleWizardStep> {
-        return arrayOf(ZigLibraryProjectWizardStep(wizardContext))
+        return arrayOf(ZigLibraryProjectWizardStep())
     }
-
 }

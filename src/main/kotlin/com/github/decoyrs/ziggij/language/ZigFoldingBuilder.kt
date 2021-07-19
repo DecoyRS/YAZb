@@ -13,7 +13,7 @@ import com.intellij.psi.util.PsiTreeUtil
 
 class ZigFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if(root !is ZigFile) return emptyArray()
+        if (root !is ZigFile) return emptyArray()
 
         val descriptors: MutableList<FoldingDescriptor> = ArrayList()
         val visitor = FoldingVisitor(descriptors)

@@ -1,17 +1,16 @@
+@file:Suppress("MaximumLineLength", "style.MaxLineLength")
+
 package com.github.decoyrs.ziggij.language
 
 import Icons.ZigIcons
-import com.github.decoyrs.ziggij.ZigFileType
 import com.github.decoyrs.ziggij.ZiggIjBundle
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
-import javax.swing.Icon
 
 class ZigColorSettingsPage : ColorSettingsPage {
-    companion object{
+    companion object {
         val DESCRIPTORS = arrayOf(
             AttributesDescriptor(ZiggIjBundle.message("ziggij.highlighter.settings.keyword"), ZigSyntaxHighlighter.KEYWORD),
             AttributesDescriptor(ZiggIjBundle.message("ziggij.highlighter.settings.operator.ordinary"), ZigSyntaxHighlighter.OPERATOR),
@@ -25,7 +24,7 @@ class ZigColorSettingsPage : ColorSettingsPage {
 
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName() = "Zig"
+    override fun getDisplayName() = ZiggIjBundle.message("configurable.name.zig")
 
     override fun getIcon() = ZigIcons.FILE_ICON
 

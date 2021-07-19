@@ -1,8 +1,9 @@
+@file:Suppress("HardCodedStringLiteral", "PackageName", "PackageNaming")
+
 package Icons
 
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.IconUtil
-import javax.swing.Icon
 
 object ZigIcons {
     val FILE_ICON = IconLoader.getIcon("/Icons/zig_file.png", IconUtil::class.java)

@@ -5,32 +5,42 @@ import com.github.decoyrs.ziggij.language.psi.ZigStringLiteral
 import com.github.decoyrs.ziggij.toolchain.ZigProjectToolchainHolder
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.psi.*
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.PsiReferenceContributor
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.PsiReferenceRegistrar
 import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import com.intellij.util.ProcessingContext
-import org.jetbrains.annotations.NotNull
 
-class ZigReferenceContributor:PsiReferenceContributor() {
+class ZigReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(ZigPsiPattern.importString, ZigPackageReferenceProvider())
         registrar.registerReferenceProvider(ZigPsiPattern.importString, ZigStdPackageReferenceProvider())
     }
 
-    private class ZigStdPackageReferenceProvider: PsiReferenceProvider(){
+    private class ZigStdPackageReferenceProvider : PsiReferenceProvider() {
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<FileReference> {
-            if(element !is ZigStringLiteral) return emptyArray()
+            if (element !is ZigStringLiteral) return emptyArray()
 
             val fs = element.containingFile.originalFile.virtualFile.fileSystem
             val text = element.text.trim('\"')
             val offsetInElement = element.text.indexOfFirst { it == '\"' } + 1
 
             val toolchainInfo = ZigProjectToolchainHolder.Instance.getToolchainInfo()
-            val stdDir = LocalFileSystem.getInstance().findFileByIoFile(toolchainInfo.std_dir)?: return emptyArray()
+            val stdDir = LocalFileSystem.getInstance().findFileByIoFile(toolchainInfo.std_dir) ?: return emptyArray()
 
             val psiStdDir = PsiDirectoryFactory.getInstance(element.project).createDirectory(stdDir)
-            return ZigStdPackageReferenceSet(text, element, offsetInElement, fs.isCaseSensitive, psiStdDir).allReferences
+            return ZigStdPackageReferenceSet(
+                text,
+                element,
+                offsetInElement,
+                fs.isCaseSensitive,
+                psiStdDir
+            ).allReferences
         }
 
         private class ZigStdPackageReferenceSet(
@@ -49,9 +59,9 @@ class ZigReferenceContributor:PsiReferenceContributor() {
         }
     }
 
-    private class ZigPackageReferenceProvider: PsiReferenceProvider() {
+    private class ZigPackageReferenceProvider : PsiReferenceProvider() {
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<FileReference> {
-            if(element !is ZigStringLiteral) return emptyArray()
+            if (element !is ZigStringLiteral) return emptyArray()
 
             val fs = element.containingFile.originalFile.virtualFile.fileSystem
             val text = element.text.trim('\"')
@@ -59,13 +69,13 @@ class ZigReferenceContributor:PsiReferenceContributor() {
             return ZigPackageReferenceSet(text, element, offsetInElement, fs.isCaseSensitive).allReferences
         }
 
-        private class ZigPackageReferenceSet(str: String,
-                                             element: ZigStringLiteral,
-                                             startOffset: Int,
-                                             isCaseSensitive: Boolean
+        private class ZigPackageReferenceSet(
+            str: String,
+            element: ZigStringLiteral,
+            startOffset: Int,
+            isCaseSensitive: Boolean
         ) : FileReferenceSet(str, element, startOffset, null, isCaseSensitive) {
             override fun getDefaultContexts(): Collection<PsiFileSystemItem> = parentDirectoryContext
         }
     }
-
 }

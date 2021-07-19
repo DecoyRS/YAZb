@@ -5,7 +5,7 @@ import com.intellij.lang.HelpID
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 
-class ZigFindUsagesProvider:FindUsagesProvider {
+class ZigFindUsagesProvider : FindUsagesProvider {
     override fun getWordsScanner() = ZigWordScanner()
     override fun canFindUsagesFor(element: PsiElement) = element is ZigNamedElement
     override fun getHelpId(psiElement: PsiElement) = HelpID.FIND_OTHER_USAGES

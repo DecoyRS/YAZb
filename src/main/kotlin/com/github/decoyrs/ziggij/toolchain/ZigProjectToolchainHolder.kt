@@ -1,7 +1,10 @@
+@file:Suppress("HardCodedStringLiteral")
+
 package com.github.decoyrs.ziggij.toolchain
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.diagnostic.Logger
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -13,7 +16,8 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-fun String.runCommand(): String {
+@Suppress("SpreadOperator")
+fun String.runCommand(logger: Logger): String {
     return try {
         val parts = this.split("\\s".toRegex())
         val proc = ProcessBuilder(*parts.toTypedArray())
@@ -21,10 +25,11 @@ fun String.runCommand(): String {
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
 
-        proc.waitFor(60, TimeUnit.MINUTES)
+        val hour: Long = 60
+        proc.waitFor(hour, TimeUnit.MINUTES)
         proc.inputStream.bufferedReader().readText()
-    } catch(e: IOException) {
-        e.printStackTrace()
+    } catch (e: IOException) {
+        logger.error("Failed to run command $this", e)
         ""
     }
 }
@@ -36,26 +41,28 @@ object PathAsStringSerializer : KSerializer<File> {
 }
 
 @Serializable
+@Suppress("ConstructorParameterNaming")
 data class ZigToolchainInfo(
     @Serializable(with = PathAsStringSerializer::class)
-    val zig_exe:File,
+    val zig_exe: File,
     @Serializable(with = PathAsStringSerializer::class)
-    val lib_dir:File,
+    val lib_dir: File,
     @Serializable(with = PathAsStringSerializer::class)
-    val std_dir:File,
+    val std_dir: File,
     @Serializable(with = PathAsStringSerializer::class)
-    val global_cache_dir:File,
-    val version:String
+    val global_cache_dir: File,
+    val version: String
 )
 
 @Service(Service.Level.APP)
 class ZigProjectToolchainHolder {
-    companion object{
+    companion object {
         val Instance: ZigProjectToolchainHolder = ServiceManager.getService(ZigProjectToolchainHolder::class.java)
+        val logger = Logger.getInstance(ZigProjectToolchainHolder::class.java)
     }
-    fun getToolchainInfo():ZigToolchainInfo {
-        val pathToZigBin = "D:/PROGRAMS/zig/zig-windows-x86_64-0.8.0-dev.2275+8467373bb/zig.exe"
-        val output = "$pathToZigBin env".runCommand()
+    fun getToolchainInfo(): ZigToolchainInfo {
+        val pathToZigBin = "C:/Users/jetbrains/zig-windows-x86_64-0.8.0-dev.2133+ad33e3483/zig.exe"
+        val output = "$pathToZigBin env".runCommand(logger)
         return Json.decodeFromString(ZigToolchainInfo.serializer(), output)
     }
 }

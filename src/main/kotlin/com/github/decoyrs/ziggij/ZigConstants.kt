@@ -1,4 +1,6 @@
+@file:Suppress("HardCodedStringLiteral")
+
 package com.github.decoyrs.ziggij
 
-val ZIG_NAME = "Zig"
-val ZIG_EXTENSION = "zig"
+const val ZIG_NAME = "Zig"
+const val ZIG_EXTENSION = "zig"

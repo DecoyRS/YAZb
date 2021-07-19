@@ -10,16 +10,17 @@ inline fun <reified I : PsiElement> psiElement(): PsiElementPattern.Capture<I> {
     return psiElement(I::class.java)
 }
 
-inline infix fun <reified I : PsiElement> ElementPattern<out I>.or(pattern: ElementPattern<out I>): PsiElementPattern.Capture<I> {
+inline infix fun <reified I : PsiElement> ElementPattern<out I>.or(pattern: ElementPattern<out I>):
+    PsiElementPattern.Capture<I> {
     return psiElement<I>().andOr(this, pattern)
 }
 
 object ZigPsiPattern {
 
-    private val importBuiltin: PsiElementPattern.Capture<PsiElement> = psiElement(ZigTypes.BUILTIN_INVOKE).withFirstChild(
-        psiElement(ZigTypes.BUILTIN_SYMBOL).withText("@import")
-    )
+    private val importBuiltin: PsiElementPattern.Capture<PsiElement> =
+        psiElement(ZigTypes.BUILTIN_INVOKE).withFirstChild(psiElement(ZigTypes.BUILTIN_SYMBOL).withText("@import"))
 
+    private const val depthOfStringInImport = 4
     val importString: PsiElementPattern.Capture<PsiElement> =
-        psiElement(ZigTypes.STRING_LITERAL).withSuperParent(4, importBuiltin)
+        psiElement(ZigTypes.STRING_LITERAL).withSuperParent(depthOfStringInImport, importBuiltin)
 }

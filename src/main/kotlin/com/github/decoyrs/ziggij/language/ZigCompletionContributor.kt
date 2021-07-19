@@ -1,21 +1,27 @@
+@file:Suppress("HardCodedStringLiteral")
+
 package com.github.decoyrs.ziggij.language
 
 import Icons.ZigIcons
 import com.github.decoyrs.ziggij.ZiggIjBundle
 import com.github.decoyrs.ziggij.language.core.ZigPsiPattern
 import com.github.decoyrs.ziggij.language.psi.ZigTypes
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.util.ProcessingContext
 
-class ZigCompletionProvider(private val list: List<LookupElement>)
-    : CompletionProvider<CompletionParameters>() {
+class ZigCompletionProvider(private val list: List<LookupElement>) : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(
-        parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet
-    ) =
-        list.forEach(result::addElement)
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) = list.forEach(result::addElement)
 }
 
 class ZigCompletionContributor : CompletionContributor() {
