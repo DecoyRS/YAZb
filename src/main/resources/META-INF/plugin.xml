@@ -32,8 +32,14 @@
                 order="first"
         />
         <!-- Usages Provider -->
-
         <lang.findUsagesProvider language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigFindUsagesProvider"/>
+
+        <!-- Documentation Provider -->
+        <lang.documentationProvider language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigDocumentationProvider" />
+
+        <!-- Testing Framework -->
+        <runLineMarkerContributor language="Zig"
+                                  implementationClass="com.github.decoyrs.ziggij.language.tests.ZigTestLineMarkerProvider"/>
     </extensions>
 
     <applicationListeners>

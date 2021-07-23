@@ -160,11 +160,13 @@ ContainerDeclarations ::=
     | TopLevelDecl
     )*
 
-TestDecl ::= DOC_COMMENT* KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
+ItemComment ::= DOC_COMMENT+
 
-TopLevelComptime ::= DOC_COMMENT* KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
+TestDecl ::= ItemComment? KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
 
-TopLevelDecl ::= DOC_COMMENT* KEYWORD_pub?
+TopLevelComptime ::= ItemComment? KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
+
+TopLevelDecl ::= ItemComment? KEYWORD_pub?
     ( TopLevelExportFn
     | TopLevelFnProto
     | TopLevelVarDecl
@@ -196,7 +198,7 @@ VarDecl ::= (KEYWORD_const | KEYWORD_var) SymbolDecl (COLON TypeExpr)? ByteAlign
 }
 private VarDecl_recover ::= !(SEMICOLON)
 
-ContainerField ::= DOC_COMMENT* KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
+ContainerField ::= ItemComment? KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
 // Block level
 Statement ::=
@@ -387,7 +389,7 @@ CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 ParamDecl ::=
     ( ParamNamedDecl
     | ParamVarargDecl )
-ParamNamedDecl ::= DOC_COMMENT* (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
+ParamNamedDecl ::= ItemComment? (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
@@ -481,7 +483,7 @@ ContainerDeclType ::=
 ByteAlign ::= KEYWORD_align LPAREN Expr RPAREN
 
 // Lists
-IdentifierList ::= (DOC_COMMENT* Symbol COMMA)* (DOC_COMMENT* Symbol)?
+IdentifierList ::= (ItemComment? Symbol COMMA)* (ItemComment? Symbol)?
 
 SwitchProngList ::= (SwitchProng COMMA)* SwitchProng?
 
