@@ -38,12 +38,12 @@ HEX_INT = {HEX} ("_"? {HEX}+)*
 OCT_INT = {OCT} ("_"? {OCT}+)*
 BIN_INT = {BIN} ("_"? {BIN}+)*
 
-CHAR_ESCAPE = ( "\x" {HEX} {HEX} | "\u\{" {HEX}+ "}" | "\\" [nr\\t'\"] )
+CHAR_ESCAPE = ( "\\x" {HEX} {HEX} | "\\u\{" {HEX}+ "}" | "\\" [nr\\t'\"] )
 CHAR_CHAR = ({CHAR_ESCAPE} | [^\\'\n])
 STRING_CHAR = ({CHAR_ESCAPE} | [^\\\"\n])
-CONTAINER_DOC_COMMENT = ({LINE_WS}*"//!".*{EOL_WS})*({LINE_WS}*"//!".*)
+CONTAINER_DOC_COMMENT = "//!".*{EOL_WS}?
 // !(!a|b) is a (set) difference between a and b.
-DOC_COMMENT  = {LINE_WS}*!(!("///".*)|("////".*))
+DOC_COMMENT  = "///".*{EOL_WS}?
 LINE_STRING = ("\\\\" [^\n]* [ \n]*)+
 
 CHAR_LITERAL = "'" {CHAR_CHAR} "'"

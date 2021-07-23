@@ -143,7 +143,7 @@
   ]
 }
 
-zigFile ::= CONTAINER_DOC_COMMENT? ContainerMembers <<eof>>
+zigFile ::= CONTAINER_DOC_COMMENT* ContainerMembers <<eof>>
 
 STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING) {
     implements=[
@@ -160,17 +160,19 @@ ContainerDeclarations ::=
     | TopLevelDecl
     )*
 
-TestDecl ::= DOC_COMMENT? KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
+TestDecl ::= DOC_COMMENT* KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
 
-TopLevelComptime ::= DOC_COMMENT? KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
+TopLevelComptime ::= DOC_COMMENT* KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
 
-TopLevelDecl ::= DOC_COMMENT? KEYWORD_pub?
-    ( TopLevelFnProto
+TopLevelDecl ::= DOC_COMMENT* KEYWORD_pub?
+    ( TopLevelExportFn
+    | TopLevelFnProto
     | TopLevelVarDecl
     | UsingNamespaceDecl
     )
 
-private TopLevelFnProto ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE? | (KEYWORD_inline | KEYWORD_noinline))? FnProto (SEMICOLON | Block)
+private TopLevelExportFn ::= KEYWORD_extern STRING_LITERAL_SINGLE?  FnProto SEMICOLON {pin=1}
+private TopLevelFnProto ::= (KEYWORD_export | (KEYWORD_inline | KEYWORD_noinline))? FnProto Block
 private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
 UsingNamespaceDecl ::= KEYWORD_usingnamespace Expr SEMICOLON
@@ -179,7 +181,7 @@ FnProto ::= KEYWORD_fn SymbolDecl? LPAREN ParamDeclList RPAREN ByteAlign? LinkSe
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
-//	pin='KEYWORD_fn'
+	pin=1
 //	recoverWhile=FnProto_private
 }
 FnReturnTypeExpr ::= EXCLAMATIONMARK? TypeExpr
@@ -194,7 +196,7 @@ VarDecl ::= (KEYWORD_const | KEYWORD_var) SymbolDecl (COLON TypeExpr)? ByteAlign
 }
 private VarDecl_recover ::= !(SEMICOLON)
 
-ContainerField ::= DOC_COMMENT? KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
+ContainerField ::= DOC_COMMENT* KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
 // Block level
 Statement ::=
@@ -385,7 +387,7 @@ CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 ParamDecl ::=
     ( ParamNamedDecl
     | ParamVarargDecl )
-ParamNamedDecl ::= DOC_COMMENT? (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
+ParamNamedDecl ::= DOC_COMMENT* (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
 {
 	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
 	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
@@ -463,10 +465,10 @@ PtrTypeStart ::=
     | ASTERISK2
     | LBRACKET ASTERISK (LETTERC | COLON Expr)? RBRACKET )
 
-ArrayTypeStart ::= LBRACKET (Expr)? RBRACKET
+ArrayTypeStart ::= LBRACKET Expr? (COLON Expr)? RBRACKET
 
 // ContainerDecl specific
-ContainerDeclAuto ::= ContainerDeclType LBRACE CONTAINER_DOC_COMMENT? ContainerMembers RBRACE
+ContainerDeclAuto ::= ContainerDeclType LBRACE CONTAINER_DOC_COMMENT* ContainerMembers RBRACE
 
 ContainerDeclType ::=
     ( KEYWORD_struct
@@ -479,7 +481,7 @@ ContainerDeclType ::=
 ByteAlign ::= KEYWORD_align LPAREN Expr RPAREN
 
 // Lists
-IdentifierList ::= (DOC_COMMENT? Symbol COMMA)* (DOC_COMMENT? Symbol)?
+IdentifierList ::= (DOC_COMMENT* Symbol COMMA)* (DOC_COMMENT* Symbol)?
 
 SwitchProngList ::= (SwitchProng COMMA)* SwitchProng?
 
