@@ -143,7 +143,8 @@
   ]
 }
 
-zigFile ::= CONTAINER_DOC_COMMENT* ContainerMembers <<eof>>
+zigFile ::= containerComment? ContainerMembers <<eof>>
+containerComment ::= CONTAINER_DOC_COMMENT*
 
 STRING_LITERAL ::= (STRING_LITERAL_SINGLE | LINE_STRING) {
     implements=[
