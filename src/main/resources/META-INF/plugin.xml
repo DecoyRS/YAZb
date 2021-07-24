@@ -35,7 +35,11 @@
         <lang.findUsagesProvider language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigFindUsagesProvider"/>
 
         <!-- Documentation Provider -->
-        <lang.documentationProvider language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigDocumentationProvider" />
+        <lang.documentationProvider language="Zig"
+                                    implementationClass="com.github.decoyrs.ziggij.ide.ZigDocumentationProvider" />
+
+        <!-- Commenter -->
+        <lang.commenter language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigCommenter" />
 
         <!-- Testing Framework -->
         <runLineMarkerContributor language="Zig"
