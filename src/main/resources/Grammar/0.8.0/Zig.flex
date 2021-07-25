@@ -44,7 +44,7 @@ STRING_CHAR = ({CHAR_ESCAPE} | [^\\\"\n])
 CONTAINER_DOC_COMMENT = "//!".*{EOL_WS}?
 // !(!a|b) is a (set) difference between a and b.
 DOC_COMMENT  = "///".*{EOL_WS}?
-LINE_STRING = ("\\\\" [^\n]* [ \n]*)+
+LINE_STRING = ("\\\\" [^\r\n]* {EOL_WS})
 
 CHAR_LITERAL = "'" {CHAR_CHAR} "'"
 INCOMPLETE_CHAR = "'" {CHAR_CHAR}
