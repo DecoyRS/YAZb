@@ -4,7 +4,7 @@ import com.github.decoyrs.ziggij.ZigLanguage
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 
-class ZigTokenType(name: String) : IElementType(name, ZigLanguage.INSTANCE) {
+class ZigTokenType(name: String) : IElementType(name, ZigLanguage) {
     @Suppress("HardCodedStringLiteral")
     override fun toString() = "ZigTokenType." + super.toString()
 }

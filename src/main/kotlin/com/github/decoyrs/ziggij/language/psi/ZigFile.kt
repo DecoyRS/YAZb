@@ -5,7 +5,7 @@ import com.github.decoyrs.ziggij.ZigLanguage
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.psi.FileViewProvider
 
-class ZigFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ZigLanguage.INSTANCE) {
-    override fun getFileType() = ZigFileType.INSTANCE
+class ZigFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ZigLanguage) {
+    override fun getFileType() = ZigFileType
     override fun toString() = "Zig File"
 }

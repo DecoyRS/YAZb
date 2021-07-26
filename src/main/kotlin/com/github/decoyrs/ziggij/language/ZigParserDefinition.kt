@@ -16,7 +16,7 @@ import com.intellij.psi.tree.TokenSet
 class ZigParserDefinition : ParserDefinition {
     override fun createLexer(project: Project?) = ZigLexerAdapter()
     override fun createParser(project: Project?) = ZigParser()
-    override fun getFileNodeType() = IFileElementType(ZigLanguage.INSTANCE)
+    override fun getFileNodeType() = IFileElementType(ZigLanguage)
     override fun getCommentTokens() = TokenSet.create(ZigTypes.LINE_COMMENT)
     override fun getStringLiteralElements() = TokenSet.create(ZigTypes.STRING_LITERAL_SINGLE)
     override fun createElement(node: ASTNode?): PsiElement = ZigTypes.Factory.createElement(node)

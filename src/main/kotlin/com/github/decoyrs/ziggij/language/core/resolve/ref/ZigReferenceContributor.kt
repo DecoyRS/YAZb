@@ -1,19 +1,13 @@
 package com.github.decoyrs.ziggij.language.core.resolve.ref
 
+import com.github.decoyrs.ziggij.ZigFileType
 import com.github.decoyrs.ziggij.language.core.ZigPsiPattern
 import com.github.decoyrs.ziggij.language.psi.ZigStringLiteral
-import com.github.decoyrs.ziggij.toolchain.ZigProjectToolchainHolder
 import com.intellij.openapi.util.Condition
-import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFileSystemItem
-import com.intellij.psi.PsiReferenceContributor
-import com.intellij.psi.PsiReferenceProvider
-import com.intellij.psi.PsiReferenceRegistrar
-import com.intellij.psi.impl.file.PsiDirectoryFactory
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference
 import com.intellij.util.ProcessingContext
 
 class ZigReferenceContributor : PsiReferenceContributor() {
@@ -23,39 +17,10 @@ class ZigReferenceContributor : PsiReferenceContributor() {
     }
 
     private class ZigStdPackageReferenceProvider : PsiReferenceProvider() {
-        override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<FileReference> {
+        override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiFileReference> {
             if (element !is ZigStringLiteral) return emptyArray()
 
-            val fs = element.containingFile.originalFile.virtualFile.fileSystem
-            val text = element.text.trim('\"')
-            val offsetInElement = element.text.indexOfFirst { it == '\"' } + 1
-
-            val toolchainInfo = ZigProjectToolchainHolder.Instance.getToolchainInfo()
-            val stdDir = LocalFileSystem.getInstance().findFileByIoFile(toolchainInfo.std_dir) ?: return emptyArray()
-
-            val psiStdDir = PsiDirectoryFactory.getInstance(element.project).createDirectory(stdDir)
-            return ZigStdPackageReferenceSet(
-                text,
-                element,
-                offsetInElement,
-                fs.isCaseSensitive,
-                psiStdDir
-            ).allReferences
-        }
-
-        private class ZigStdPackageReferenceSet(
-            str: String,
-            element: ZigStringLiteral,
-            startOffset: Int,
-            isCaseSensitive: Boolean,
-            private val stdDir: PsiDirectory
-        ) : FileReferenceSet(str, element, startOffset, null, isCaseSensitive) {
-            val stdLibs = setOf("std.zig", "builtin.zig")
-
-            override fun getDefaultContexts(): Collection<PsiFileSystemItem> = setOf(stdDir)
-            override fun getReferenceCompletionFilter(): Condition<PsiFileSystemItem> {
-                return Condition { it.isDirectory.not() && stdLibs.contains(it.virtualFile.name) }
-            }
+            return arrayOf(ZigStdLibReference(element))
         }
     }
 
@@ -76,6 +41,9 @@ class ZigReferenceContributor : PsiReferenceContributor() {
             isCaseSensitive: Boolean
         ) : FileReferenceSet(str, element, startOffset, null, isCaseSensitive) {
             override fun getDefaultContexts(): Collection<PsiFileSystemItem> = parentDirectoryContext
+            override fun getReferenceCompletionFilter(): Condition<PsiFileSystemItem> {
+                return Condition { it.isDirectory || it.virtualFile.fileType == ZigFileType }
+            }
         }
     }
 }

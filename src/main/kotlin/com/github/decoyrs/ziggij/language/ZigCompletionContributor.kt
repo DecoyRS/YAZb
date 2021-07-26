@@ -195,16 +195,6 @@ class ZigCompletionContributor : CompletionContributor() {
                 .withTypeText(ZiggIjBundle.message("ziggij.completion.builtins"))
                 .bold()
         }
-
-        val STD_LIBS = arrayOf(
-            "std",
-            "builtins"
-        ).map {
-            LookupElementBuilder.create(it)
-                .withIcon(ZigIcons.ZIG_BIG_ICON)
-                .withTypeText(ZiggIjBundle.message("ziggij.completion.stdLibs"))
-                .bold()
-        }
     }
 
     init {
@@ -216,11 +206,6 @@ class ZigCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             psiElement(ZigTypes.BUILTINIDENTIFIER),
             ZigCompletionProvider(BUILTINS))
-        extend(
-            CompletionType.BASIC,
-            ZigPsiPattern.importString,
-            ZigCompletionProvider(STD_LIBS)
-        )
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {

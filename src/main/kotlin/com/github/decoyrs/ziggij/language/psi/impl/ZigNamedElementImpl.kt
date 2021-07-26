@@ -13,7 +13,7 @@ import com.intellij.psi.util.PsiTreeUtil.findChildOfType
 
 fun fromText(string: String, project: Project): PsiElement = PsiFileFactory
     .getInstance(project)
-    .createFileFromText(ZigLanguage.INSTANCE, string)
+    .createFileFromText(ZigLanguage, string)
     .firstChild
     .let { (it as? PsiErrorElement)?.firstChild ?: it }
 
