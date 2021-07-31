@@ -1,4 +1,4 @@
-package org.zig.yazb.language
+package org.zig.yazb.language.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator

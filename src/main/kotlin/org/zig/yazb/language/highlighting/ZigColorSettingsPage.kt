@@ -1,11 +1,10 @@
 @file:Suppress("MaximumLineLength", "style.MaxLineLength")
 
-package org.zig.yazb.language
+package org.zig.yazb.language.highlighting
 
 import Icons.ZigIcons
 import org.zig.yazb.YAZbBundle
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 
@@ -17,6 +16,7 @@ class ZigColorSettingsPage : ColorSettingsPage {
             ZigColors.PARENTHESES.attributesDescriptor,
             ZigColors.BRACKETS.attributesDescriptor,
             ZigColors.BRACES.attributesDescriptor,
+            ZigColors.BUILTIN_FUNCTION_CALL.attributesDescriptor
         )
     }
 

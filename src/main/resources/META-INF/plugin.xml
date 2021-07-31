@@ -13,9 +13,9 @@
         <projectService serviceImplementation="org.zig.yazb.services.MyProjectService"/>
         <fileType name="Zig File" implementationClass="org.zig.yazb.ZigFileType" fieldName="INSTANCE" language="Zig" extensions="zig"/>
         <lang.parserDefinition language="Zig" implementationClass="org.zig.yazb.language.ZigParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Zig" implementationClass="org.zig.yazb.language.ZigSyntaxHighlighterFactory" />
+        <lang.syntaxHighlighterFactory language="Zig" implementationClass="org.zig.yazb.language.highlighting.ZigSyntaxHighlighterFactory" />
         <lang.foldingBuilder language="Zig" implementationClass="org.zig.yazb.language.ZigFoldingBuilder" />
-        <colorSettingsPage implementation="org.zig.yazb.language.ZigColorSettingsPage" />
+        <colorSettingsPage implementation="org.zig.yazb.language.highlighting.ZigColorSettingsPage" />
         <completion.contributor language="Zig" implementationClass="org.zig.yazb.language.ZigCompletionContributor" />
         <psi.referenceContributor language="Zig" implementation="org.zig.yazb.language.core.resolve.ref.ZigReferenceContributor" />
 <!-- Project Module -->

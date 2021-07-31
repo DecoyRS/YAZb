@@ -1,10 +1,9 @@
 @file:Suppress("MaximumLineLength")
 
-package org.zig.yazb.language
+package org.zig.yazb.language.highlighting
 
 import org.zig.yazb.language.lexer.ZigLexerAdapter
 import org.zig.yazb.language.psi.ZigTypes
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType

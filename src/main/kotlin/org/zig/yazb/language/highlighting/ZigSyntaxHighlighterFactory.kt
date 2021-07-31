@@ -1,4 +1,4 @@
-package org.zig.yazb.language
+package org.zig.yazb.language.highlighting
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.project.Project
