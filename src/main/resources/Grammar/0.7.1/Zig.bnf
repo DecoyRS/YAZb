@@ -1,18 +1,18 @@
 {
-  parserClass="com.github.decoyrs.ziggij.language.parser.ZigParser"
+  parserClass="org.zig.yazb.language.parser.ZigParser"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
   psiClassPrefix="Zig"
   psiImplClassSuffix="Impl"
-  psiPackage="com.github.decoyrs.ziggij.language.psi"
-  psiImplPackage="com.github.decoyrs.ziggij.language.psi.impl"
+  psiPackage="org.zig.yazb.language.psi"
+  psiImplPackage="org.zig.yazb.language.psi.impl"
 
-  elementTypeHolderClass="com.github.decoyrs.ziggij.language.psi.ZigTypes"
-  elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
-  tokenTypeClass="com.github.decoyrs.ziggij.language.psi.ZigTokenType"
+  elementTypeHolderClass="org.zig.yazb.language.psi.ZigTypes"
+  elementTypeClass="org.zig.yazb.language.psi.ZigElementType"
+  tokenTypeClass="org.zig.yazb.language.psi.ZigTokenType"
 
-  psiImplUtilClass="com.github.decoyrs.ziggij.language.psi.impl.ZigPsiImplUtil"
+  psiImplUtilClass="org.zig.yazb.language.psi.impl.ZigPsiImplUtil"
 
   extends('.*Expr')=Expr
 

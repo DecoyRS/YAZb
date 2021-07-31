@@ -1,6 +1,6 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" allow-bundled-update="true">
-    <id>com.github.decoyrs.ziggij</id>
-    <name>ZiggIJ</name>
+    <id>org.zig.yazb</id>
+    <name>YAZb</name>
     <vendor>decoyrs</vendor>
 
     <!-- Product and plugin compatibility requirements -->
@@ -9,45 +9,45 @@
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.decoyrs.ziggij.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.decoyrs.ziggij.services.MyProjectService"/>
-        <fileType name="Zig File" implementationClass="com.github.decoyrs.ziggij.ZigFileType" fieldName="INSTANCE" language="Zig" extensions="zig"/>
-        <lang.parserDefinition language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigSyntaxHighlighterFactory" />
-        <lang.foldingBuilder language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigFoldingBuilder" />
-        <colorSettingsPage implementation="com.github.decoyrs.ziggij.language.ZigColorSettingsPage" />
-        <completion.contributor language="Zig" implementationClass="com.github.decoyrs.ziggij.language.ZigCompletionContributor" />
-        <psi.referenceContributor language="Zig" implementation="com.github.decoyrs.ziggij.language.core.resolve.ref.ZigReferenceContributor" />
+        <applicationService serviceImplementation="org.zig.yazb.services.MyApplicationService"/>
+        <projectService serviceImplementation="org.zig.yazb.services.MyProjectService"/>
+        <fileType name="Zig File" implementationClass="org.zig.yazb.ZigFileType" fieldName="INSTANCE" language="Zig" extensions="zig"/>
+        <lang.parserDefinition language="Zig" implementationClass="org.zig.yazb.language.ZigParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Zig" implementationClass="org.zig.yazb.language.ZigSyntaxHighlighterFactory" />
+        <lang.foldingBuilder language="Zig" implementationClass="org.zig.yazb.language.ZigFoldingBuilder" />
+        <colorSettingsPage implementation="org.zig.yazb.language.ZigColorSettingsPage" />
+        <completion.contributor language="Zig" implementationClass="org.zig.yazb.language.ZigCompletionContributor" />
+        <psi.referenceContributor language="Zig" implementation="org.zig.yazb.language.core.resolve.ref.ZigReferenceContributor" />
 <!-- Project Module -->
-        <moduleType id="ZIG_EXECUTABLE_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigExecutableModuleType"/>
-        <moduleType id="ZIG_LIBRARY_MODULE_TYPE" implementationClass="com.github.decoyrs.ziggij.projectModel.ZigLibraryModuleType"/>
+        <moduleType id="ZIG_EXECUTABLE_MODULE_TYPE" implementationClass="org.zig.yazb.projectModel.ZigExecutableModuleType"/>
+        <moduleType id="ZIG_LIBRARY_MODULE_TYPE" implementationClass="org.zig.yazb.projectModel.ZigLibraryModuleType"/>
         <moduleBuilder
-                builderClass="com.github.decoyrs.ziggij.projectModel.ZigExecutableModuleBuilder"
+                builderClass="org.zig.yazb.projectModel.ZigExecutableModuleBuilder"
                 id="ZIG_EXECUTABLE_STEP"
                 order="first"
         />
         <moduleBuilder
-                builderClass="com.github.decoyrs.ziggij.projectModel.ZigLibraryModuleBuilder"
+                builderClass="org.zig.yazb.projectModel.ZigLibraryModuleBuilder"
                 id="ZIG_LIBRARY_STEP"
                 order="first"
         />
         <!-- Usages Provider -->
-        <lang.findUsagesProvider language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigFindUsagesProvider"/>
+        <lang.findUsagesProvider language="Zig" implementationClass="org.zig.yazb.ide.ZigFindUsagesProvider"/>
 
         <!-- Documentation Provider -->
         <lang.documentationProvider language="Zig"
-                                    implementationClass="com.github.decoyrs.ziggij.ide.ZigDocumentationProvider" />
+                                    implementationClass="org.zig.yazb.ide.ZigDocumentationProvider" />
 
         <!-- Commenter -->
-        <lang.commenter language="Zig" implementationClass="com.github.decoyrs.ziggij.ide.ZigCommenter" />
+        <lang.commenter language="Zig" implementationClass="org.zig.yazb.ide.ZigCommenter" />
 
         <!-- Testing Framework -->
         <runLineMarkerContributor language="Zig"
-                                  implementationClass="com.github.decoyrs.ziggij.language.tests.ZigTestLineMarkerProvider"/>
+                                  implementationClass="org.zig.yazb.language.tests.ZigTestLineMarkerProvider"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.decoyrs.ziggij.listeners.MyProjectManagerListener"
+        <listener class="org.zig.yazb.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 </idea-plugin>

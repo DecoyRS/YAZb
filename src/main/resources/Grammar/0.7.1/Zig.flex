@@ -1,10 +1,10 @@
-package com.github.decoyrs.ziggij;
+package org.zig.yazb;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
-import com.github.decoyrs.ziggij.language.psi.ZigTypes;
-import com.github.decoyrs.ziggij.language.psi.ZigTokenType;
+import org.zig.yazb.language.psi.ZigTypes;
+import org.zig.yazb.language.psi.ZigTokenType;
 
 %%
 

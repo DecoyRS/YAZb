@@ -1,10 +1,10 @@
-package com.github.decoyrs.ziggij;
+package org.zig.yazb;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
-import com.github.decoyrs.ziggij.language.psi.ZigTypes;
-import com.github.decoyrs.ziggij.language.psi.ZigTokenType;
+import org.zig.yazb.language.psi.ZigTypes;
+import org.zig.yazb.language.psi.ZigTokenType;
 
 %%
 
@@ -41,10 +41,9 @@ BIN_INT = {BIN} ("_"? {BIN}+)*
 CHAR_ESCAPE = ( "\\x" {HEX} {HEX} | "\\u\{" {HEX}+ "}" | "\\" [nr\\t'\"] )
 CHAR_CHAR = ({CHAR_ESCAPE} | [^\\'\n])
 STRING_CHAR = ({CHAR_ESCAPE} | [^\\\"\n])
-CONTAINER_DOC_COMMENT = "//!".*{EOL_WS}?
-// !(!a|b) is a (set) difference between a and b.
-DOC_COMMENT  = "///".*{EOL_WS}?
-LINE_STRING = ("\\\\" [^\r\n]* {EOL_WS})
+CONTAINER_DOC_COMMENT_LINE = "//!".*{EOL_WS}
+DOC_COMMENT_LINE  = "///".*{EOL_WS}
+LINE_STRING = "\\\\" [^\r\n]* {EOL_WS}
 
 CHAR_LITERAL = "'" {CHAR_CHAR} "'"
 INCOMPLETE_CHAR = "'" {CHAR_CHAR}
@@ -195,10 +194,10 @@ BUILTINIDENTIFIER = "@"[A-Za-z_][A-Za-z0-9_]*
     {BUILTINIDENTIFIER}     { return ZigTypes.BUILTINIDENTIFIER; }
     {IDENTIFIER}            { return ZigTypes.IDENTIFIER; }
 
-    "////" .*               { return ZigTypes.LINE_COMMENT; }
-    {CONTAINER_DOC_COMMENT} { return ZigTypes.CONTAINER_DOC_COMMENT; }
-    {DOC_COMMENT}           { return ZigTypes.DOC_COMMENT; }
-    "//" .*               { return ZigTypes.LINE_COMMENT; }
+    "////" .*                    { return ZigTypes.LINE_COMMENT; }
+    {CONTAINER_DOC_COMMENT_LINE} { return ZigTypes.CONTAINER_DOC_COMMENT_LINE; }
+    {DOC_COMMENT_LINE}           { return ZigTypes.DOC_COMMENT_LINE; }
+    "//" .*                      { return ZigTypes.LINE_COMMENT; }
 
     {OTHERWISE}             { return TokenType.BAD_CHARACTER; }
 }

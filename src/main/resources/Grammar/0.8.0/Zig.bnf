@@ -1,19 +1,19 @@
 {
-  parserClass="com.github.decoyrs.ziggij.language.parser.ZigParser"
+  parserClass="org.zig.yazb.language.parser.ZigParser"
 
-  implements="com.github.decoyrs.ziggij.language.psi.ZigElement"
+  implements="org.zig.yazb.language.psi.ZigElement"
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
   psiClassPrefix="Zig"
   psiImplClassSuffix="Impl"
-  psiPackage="com.github.decoyrs.ziggij.language.psi"
-  psiImplPackage="com.github.decoyrs.ziggij.language.psi.impl"
+  psiPackage="org.zig.yazb.language.psi"
+  psiImplPackage="org.zig.yazb.language.psi.impl"
 
-  elementTypeHolderClass="com.github.decoyrs.ziggij.language.psi.ZigTypes"
-  elementTypeClass="com.github.decoyrs.ziggij.language.psi.ZigElementType"
-  tokenTypeClass="com.github.decoyrs.ziggij.language.psi.ZigTokenType"
+  elementTypeHolderClass="org.zig.yazb.language.psi.ZigTypes"
+  elementTypeClass="org.zig.yazb.language.psi.ZigElementType"
+  tokenTypeClass="org.zig.yazb.language.psi.ZigTokenType"
 
-  psiImplUtilClass="com.github.decoyrs.ziggij.language.psi.impl.ZigPsiImplUtil"
+  psiImplUtilClass="org.zig.yazb.language.psi.impl.ZigPsiImplUtil"
 
   extends('.*Expr')=Expr
 
@@ -136,22 +136,23 @@
     BUILTINIDENTIFIER="regexp:@[A-Za-z_][A-Za-z0-9_]*"
     WHITESPACE="regexp:[ \n]+"
 
-    CONTAINER_DOC_COMMENT="regexp:(//![^\n]*[ \n]*)+"
-    DOC_COMMENT="regexp:(///[^\n]*[ \n]*)+"
-    LINE_COMMENT="regexp://([^!/][^\n]*|//[^\n]*)"
-    LINE_STRING="regexp:(\\\\[^\n]*[ \n]*)"
+    CONTAINER_DOC_COMMENT_LINE="regexp://![^\r\n]*((\r\n)|\r|\n)"
+    DOC_COMMENT_LINE="regexp:///[^\r\n]*((\r\n)|\r|\n)"
+    LINE_COMMENT="regexp://[^!/][^\r\n]*((\r\n)|\r|\n)"
+    LINE_STRING="regexp:\\\\[^\r\n]*((\r\n)|\r|\n)"
   ]
 }
 
-zigFile ::= containerComment? ContainerMembers <<eof>>
-containerComment ::= CONTAINER_DOC_COMMENT*
+zigFile ::= ContainerDocComment? ContainerMembers <<eof>>
 
-STRING_LITERAL_MULTILINE ::= (LINE_STRING+ LINE_COMMENT*)+
-STRING_LITERAL ::= (STRING_LITERAL_SINGLE | STRING_LITERAL_MULTILINE) {
+ContainerDocComment ::= CONTAINER_DOC_COMMENT_LINE*
+
+StringLiteralMultiline ::= (LINE_STRING+ LINE_COMMENT*)+
+StringLiteral ::= (STRING_LITERAL_SINGLE | StringLiteralMultiline) {
     implements=[
         "com.intellij.psi.ContributedReferenceHost"
         ]
-    mixin="com.github.decoyrs.ziggij.language.psi.ZigStringLiteralMixin"
+    mixin="org.zig.yazb.language.psi.ZigStringLiteralMixin"
 }
 
 ContainerMembers ::= ContainerDeclarations ((ContainerField COMMA)+ (ContainerField | ContainerDeclarations))?
@@ -162,20 +163,20 @@ ContainerDeclarations ::=
     | TopLevelDecl
     )*
 
-ItemComment ::= DOC_COMMENT+
+ItemDocComment ::= DOC_COMMENT_LINE+
 
-TestDecl ::= ItemComment? KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
+TestDecl ::= ItemDocComment? KEYWORD_test STRING_LITERAL_SINGLE? Block { pin='KEYWORD_test' }
 
-TopLevelComptime ::= ItemComment? KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
+TopLevelComptime ::= ItemDocComment? KEYWORD_comptime BlockExpr { pin='KEYWORD_comptime' }
 
-TopLevelDecl ::= ItemComment? KEYWORD_pub?
-    ( TopLevelExportFn
+TopLevelDecl ::= ItemDocComment? KEYWORD_pub?
+    ( TopLevelExternFn
     | TopLevelFnProto
     | TopLevelVarDecl
     | UsingNamespaceDecl
     )
 
-private TopLevelExportFn ::= KEYWORD_extern STRING_LITERAL_SINGLE?  FnProto SEMICOLON {pin=1}
+private TopLevelExternFn ::= KEYWORD_extern STRING_LITERAL_SINGLE?  FnProto SEMICOLON {pin=1}
 private TopLevelFnProto ::= (KEYWORD_export | (KEYWORD_inline | KEYWORD_noinline))? FnProto Block
 private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
 
@@ -183,8 +184,8 @@ UsingNamespaceDecl ::= KEYWORD_usingnamespace Expr SEMICOLON
 
 FnProto ::= KEYWORD_fn SymbolDecl? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? FnReturnTypeExpr
 {
-	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
 	pin=1
 //	recoverWhile=FnProto_private
 }
@@ -193,14 +194,14 @@ private FnProto_private ::= !(SEMICOLON | LBRACE)
 
 VarDecl ::= (KEYWORD_const | KEYWORD_var) SymbolDecl (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 {
-	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
 //	pin=1
 //	recoverWhile=VarDecl_recover
 }
 private VarDecl_recover ::= !(SEMICOLON)
 
-ContainerField ::= ItemComment? KEYWORD_comptime? Symbol (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
+ContainerField ::= ItemDocComment? KEYWORD_comptime? SymbolDecl (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
 // Block level
 Statement ::=
@@ -326,7 +327,7 @@ PrimaryTypeExpr ::=
     | KEYWORD_true
     | KEYWORD_undefined
     | KEYWORD_unreachable
-    | STRING_LITERAL
+    | StringLiteral
     | SwitchExpr
     )
 
@@ -359,24 +360,24 @@ AsmExpr ::= KEYWORD_asm KEYWORD_volatile? LPAREN Expr AsmOutput? RPAREN
 
 AsmOutput ::= COLON AsmOutputList AsmInput?
 
-AsmOutputItem ::= LBRACKET Symbol RBRACKET STRING_LITERAL LPAREN (MINUSRARROW TypeExpr | Symbol) RPAREN
+AsmOutputItem ::= LBRACKET Symbol RBRACKET StringLiteral LPAREN (MINUSRARROW TypeExpr | Symbol) RPAREN
 
 AsmInput ::= COLON AsmInputList AsmClobbers?
 
-AsmInputItem ::= LBRACKET Symbol RBRACKET STRING_LITERAL LPAREN Expr RPAREN
+AsmInputItem ::= LBRACKET Symbol RBRACKET StringLiteral LPAREN Expr RPAREN
 
 AsmClobbers ::= COLON StringList
 
 // Helper grammar
 BreakLabel ::= COLON Symbol
 {
-    mixin="com.github.decoyrs.ziggij.language.psi.ZigBreakLabelMixin"
+    mixin="org.zig.yazb.language.psi.ZigBreakLabelMixin"
 }
 
 BlockLabel ::= SymbolDecl COLON
 {
-	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
 }
 
 FieldInit ::= DOT Symbol EQUAL Expr
@@ -391,10 +392,10 @@ CallConv ::= KEYWORD_callconv LPAREN Expr RPAREN
 ParamDecl ::=
     ( ParamNamedDecl
     | ParamVarargDecl )
-ParamNamedDecl ::= ItemComment? (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
+ParamNamedDecl ::= ItemDocComment? (KEYWORD_noalias | KEYWORD_comptime)? (SymbolDecl COLON)? ParamType
 {
-	implements=['com.github.decoyrs.ziggij.language.psi.ZigNamedElement']
-	mixin='com.github.decoyrs.ziggij.language.psi.impl.ZigNamedElementImpl'
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
 }
 
 ParamVarargDecl ::= DOT3
@@ -472,7 +473,7 @@ PtrTypeStart ::=
 ArrayTypeStart ::= LBRACKET Expr? (COLON Expr)? RBRACKET
 
 // ContainerDecl specific
-ContainerDeclAuto ::= ContainerDeclType LBRACE CONTAINER_DOC_COMMENT* ContainerMembers RBRACE
+ContainerDeclAuto ::= ContainerDeclType LBRACE ContainerDocComment? ContainerMembers RBRACE
 
 ContainerDeclType ::=
     ( KEYWORD_struct
@@ -485,7 +486,7 @@ ContainerDeclType ::=
 ByteAlign ::= KEYWORD_align LPAREN Expr RPAREN
 
 // Lists
-IdentifierList ::= (ItemComment? Symbol COMMA)* (ItemComment? Symbol)?
+IdentifierList ::= (ItemDocComment? Symbol COMMA)* (ItemDocComment? Symbol)?
 
 SwitchProngList ::= (SwitchProng COMMA)* SwitchProng?
 
@@ -493,7 +494,7 @@ AsmOutputList ::= (AsmOutputItem COMMA)* AsmOutputItem?
 
 AsmInputList ::= (AsmInputItem COMMA)* AsmInputItem?
 
-StringList ::= (STRING_LITERAL COMMA)* STRING_LITERAL?
+StringList ::= (StringLiteral COMMA)* StringLiteral?
 
 ParamDeclList ::= (ParamDecl COMMA)* ParamDecl?
 
