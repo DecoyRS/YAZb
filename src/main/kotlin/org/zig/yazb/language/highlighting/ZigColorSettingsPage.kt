@@ -5,19 +5,14 @@ package org.zig.yazb.language.highlighting
 import Icons.ZigIcons
 import org.zig.yazb.YAZbBundle
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 
 class ZigColorSettingsPage : ColorSettingsPage {
     companion object {
-        val DESCRIPTORS = arrayOf(
-            ZigColors.KEYWORD.attributesDescriptor,
-            ZigColors.OPERATORS.attributesDescriptor,
-            ZigColors.PARENTHESES.attributesDescriptor,
-            ZigColors.BRACKETS.attributesDescriptor,
-            ZigColors.BRACES.attributesDescriptor,
-            ZigColors.BUILTIN_FUNCTION_CALL.attributesDescriptor
-        )
+        private val DESCRIPTORS: Array<AttributesDescriptor> =
+            ZigColors.values().map { it.attributesDescriptor }.toTypedArray()
     }
 
     override fun getAttributeDescriptors() = DESCRIPTORS

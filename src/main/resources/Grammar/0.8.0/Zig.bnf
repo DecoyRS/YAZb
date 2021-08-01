@@ -196,12 +196,16 @@ VarDecl ::= (KEYWORD_const | KEYWORD_var) SymbolDecl (COLON TypeExpr)? ByteAlign
 {
 	implements=['org.zig.yazb.language.psi.ZigNamedElement']
 	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
-//	pin=1
+	pin=1
 //	recoverWhile=VarDecl_recover
 }
 private VarDecl_recover ::= !(SEMICOLON)
 
 ContainerField ::= ItemDocComment? KEYWORD_comptime? SymbolDecl (COLON (KEYWORD_anytype | TypeExpr) ByteAlign?)? (EQUAL Expr)?
+{
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
+}
 
 // Block level
 Statement ::=
@@ -412,11 +416,31 @@ WhilePrefix ::= KEYWORD_while LPAREN Expr RPAREN PtrPayload? WhileContinueExpr?
 ForPrefix ::= KEYWORD_for LPAREN Expr RPAREN PtrIndexPaylod
 
 // Payloads
-Payload ::= PIPE Symbol PIPE
+Payload ::= PIPE SymbolDecl PIPE
+{
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
+}
 
-PtrPayload ::= PIPE ASTERISK? Symbol PIPE
+PtrPayload ::= PIPE ASTERISK? SymbolDecl PIPE
+{
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
+}
 
-PtrIndexPaylod ::= PIPE ASTERISK? Symbol (COMMA Symbol)? PIPE
+PtrIndexPaylod ::= PIPE ASTERISK? SequenceItemDecl (COMMA SequenceIndexDecl)? PIPE
+
+SequenceItemDecl ::= SymbolDecl
+{
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
+}
+
+SequenceIndexDecl ::= SymbolDecl
+{
+	implements=['org.zig.yazb.language.psi.ZigNamedElement']
+	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
+}
 
 // Switch specific
 SwitchProng ::= SwitchCase EQUALRARROW PtrPayload? AssignExpr
