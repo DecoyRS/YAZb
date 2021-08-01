@@ -10,7 +10,7 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferen
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.PsiFileReference
 import com.intellij.util.ProcessingContext
 
-class ZigReferenceContributor : PsiReferenceContributor() {
+class ZigPackageReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(ZigPsiPattern.importString, ZigPackageReferenceProvider())
         registrar.registerReferenceProvider(ZigPsiPattern.importString, ZigStdPackageReferenceProvider())
