@@ -172,13 +172,15 @@ TopLevelComptime ::= ItemDocComment? KEYWORD_comptime BlockExpr { pin='KEYWORD_c
 TopLevelDecl ::= ItemDocComment? KEYWORD_pub?
     ( TopLevelExternFn
     | TopLevelFnProto
+    | TopLevelExternDecl
     | TopLevelVarDecl
     | UsingNamespaceDecl
     )
 
 private TopLevelExternFn ::= KEYWORD_extern STRING_LITERAL_SINGLE?  FnProto SEMICOLON {pin=1}
 private TopLevelFnProto ::= (KEYWORD_export | (KEYWORD_inline | KEYWORD_noinline))? FnProto Block
-private TopLevelVarDecl ::= (KEYWORD_export | KEYWORD_extern STRING_LITERAL_SINGLE?)? KEYWORD_threadlocal? VarDecl
+private TopLevelExternDecl ::= KEYWORD_extern STRING_LITERAL_SINGLE? KEYWORD_threadlocal? VarDecl
+private TopLevelVarDecl ::= KEYWORD_export? KEYWORD_threadlocal? VarDecl
 
 UsingNamespaceDecl ::= KEYWORD_usingnamespace Expr SEMICOLON
 
@@ -413,7 +415,7 @@ IfPrefix ::= KEYWORD_if LPAREN Expr RPAREN PtrPayload?
 
 WhilePrefix ::= KEYWORD_while LPAREN Expr RPAREN PtrPayload? WhileContinueExpr?
 
-ForPrefix ::= KEYWORD_for LPAREN Expr RPAREN PtrIndexPaylod
+ForPrefix ::= KEYWORD_for LPAREN Expr RPAREN PtrIndexPayload
 
 // Payloads
 Payload ::= PIPE SymbolDecl PIPE
@@ -428,7 +430,7 @@ PtrPayload ::= PIPE ASTERISK? SymbolDecl PIPE
 	mixin='org.zig.yazb.language.psi.impl.ZigNamedElementImpl'
 }
 
-PtrIndexPaylod ::= PIPE ASTERISK? SequenceItemDecl (COMMA SequenceIndexDecl)? PIPE
+PtrIndexPayload ::= PIPE ASTERISK? SequenceItemDecl (COMMA SequenceIndexDecl)? PIPE
 
 SequenceItemDecl ::= SymbolDecl
 {
