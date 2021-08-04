@@ -16,7 +16,7 @@
         <lang.syntaxHighlighterFactory language="Zig" implementationClass="org.zig.yazb.language.highlighting.ZigSyntaxHighlighterFactory" />
         <lang.foldingBuilder language="Zig" implementationClass="org.zig.yazb.language.ZigFoldingBuilder" />
         <colorSettingsPage implementation="org.zig.yazb.language.highlighting.ZigColorSettingsPage" />
-        <annotator language="Zig" implementationClass="org.zig.yazb.language.highlighting.ZigAnnotator" />
+        <annotator language="Zig" implementationClass="org.zig.yazb.language.highlighting.ZigHighlighterAnnotator" />
         <completion.contributor language="Zig" implementationClass="org.zig.yazb.language.ZigCompletionContributor" />
         <psi.referenceContributor language="Zig" implementation="org.zig.yazb.language.core.resolve.ref.ZigPackageReferenceContributor" />
 <!-- Project Module -->

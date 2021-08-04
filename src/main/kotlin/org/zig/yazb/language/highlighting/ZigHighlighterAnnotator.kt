@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import org.zig.yazb.language.psi.ZigFnProto
 
-class ZigAnnotator : Annotator {
+class ZigHighlighterAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when(element) {
             is ZigFnProto -> annotate(element, holder)
