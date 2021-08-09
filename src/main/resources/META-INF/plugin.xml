@@ -45,6 +45,9 @@
         <!-- Testing Framework -->
         <runLineMarkerContributor language="Zig"
                                   implementationClass="org.zig.yazb.language.tests.ZigTestLineMarkerProvider"/>
+
+        <!-- Structure View -->
+        <lang.psiStructureViewFactory language="Zig" implementationClass="org.zig.yazb.ide.ZigStructureViewFactory" />
     </extensions>
 
     <applicationListeners>

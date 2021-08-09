@@ -176,6 +176,9 @@ TopLevelDecl ::= ItemDocComment? KEYWORD_pub?
     | TopLevelVarDecl
     | UsingNamespaceDecl
     )
+{
+    methods=[getPresentation]
+}
 
 private TopLevelExternFn ::= KEYWORD_extern STRING_LITERAL_SINGLE?  FnProto SEMICOLON {pin=1}
 private TopLevelFnProto ::= (KEYWORD_export | (KEYWORD_inline | KEYWORD_noinline))? FnProto Block
