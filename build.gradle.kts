@@ -18,7 +18,7 @@ plugins {
     // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
     // JSON parser - read more: https://github.com/Kotlin/kotlinx.serialization
-    kotlin("plugin.serialization") version "1.5.21"
+    kotlin("plugin.serialization") version "1.6.20"
 }
 
 group = properties("pluginGroup")
